@@ -1,0 +1,24 @@
+# Arduino build artifacts
+build/
+*.elf
+*.hex
+*.bin
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS junk
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Backup / temp files (keep source, ignore scraps)
+*.bak
+*.tmp
+
+# Dependencies (if using PlatformIO)
+.pio/
