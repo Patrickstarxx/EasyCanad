@@ -44,6 +44,16 @@ RC 俯仰通道 ───────── │ D2 (INT0)        │
 3. `Servo.h` 和 `EEPROM.h` 为 IDE 自带，无需额外安装
 4. 点击 **上传**
 
+## PCB 文件
+
+PCB 设计文件已离线归档在 `PCB-EasyCanad.zip`，压缩包内包含：
+
+- `1-Schematic_EasyCanad.json`：立创 EDA / EasyEDA 原理图源文件
+- `1-PCB_PCB_EasyCanad_2.json`：立创 EDA / EasyEDA PCB 源文件
+- `README.txt`：离线文件导入说明
+
+在立创 EDA 编辑器中，可通过 **文件 > 打开 > 立创EDA...** 选择对应 JSON 文件导入，并保存到自己的工程中继续编辑或导出 Gerber。
+
 ## 调试
 
 ### 串口监视器
@@ -99,6 +109,7 @@ AOA 系数 `1.2` 为控制增益，使鸭翼对攻角变化有一定超前响应
 EasyCanad/
 ├── EasyCanad.ino          # 主程序
 ├── BOM.md                 # 物料清单（含购买链接）
+├── PCB-EasyCanad.zip      # PCB 与原理图离线源文件（立创 EDA / EasyEDA）
 ├── README.md              # 本文件
 ├── .gitignore
 ├── 模型/
