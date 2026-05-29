@@ -46,13 +46,17 @@ RC 俯仰通道 ───────── │ D2 (INT0)        │
 
 ## PCB 文件
 
-PCB 设计文件已离线归档在 `PCB-EasyCanad.zip`，压缩包内包含：
+PCB 设计文件位于 `hardware/` 目录，包含：
 
-- `1-Schematic_EasyCanad.json`：立创 EDA / EasyEDA 原理图源文件
-- `1-PCB_PCB_EasyCanad_2.json`：立创 EDA / EasyEDA PCB 源文件
+- `Schematic_EasyCanad.json`：立创 EDA / EasyEDA 原理图源文件
+- `PCB_EasyCanad.json`：立创 EDA / EasyEDA PCB 源文件
 - `README.txt`：离线文件导入说明
 
+![PCB 3D 预览](hardware/previewPCB.png)
+
 在立创 EDA 编辑器中，可通过 **文件 > 打开 > 立创EDA...** 选择对应 JSON 文件导入，并保存到自己的工程中继续编辑或导出 Gerber。
+
+完整离线包也保留在 `PCB-EasyCanad.zip` 中方便分发。
 
 ## 调试
 
@@ -107,17 +111,25 @@ AOA 系数 `1.2` 为控制增益，使鸭翼对攻角变化有一定超前响应
 
 ```
 EasyCanad/
-├── EasyCanad.ino          # 主程序
-├── BOM.md                 # 物料清单（含购买链接）
-├── PCB-EasyCanad.zip      # PCB 与原理图离线源文件（立创 EDA / EasyEDA）
-├── README.md              # 本文件
+├── EasyCanad.ino              # 主程序
+├── BOM.md                     # 物料清单（含购买链接）
+├── PCB-EasyCanad.zip          # PCB 离线包（发布用）
+├── README.md                  # 本文件
 ├── .gitignore
-├── 模型/
-│   ├── 风标-大叶片.STEP    # AOA 传感器叶片 3D 模型
-│   └── 风标.SLDPRT         # AOA 传感器主体 3D 模型
-├── 零位校准.txt            # 零位校准版本（历史备份）
-└── 备份-无零位校准.txt      # 无零位校准版本（历史备份）
+├── hardware/
+│   ├── previewPCB.png         # PCB 3D 预览图
+│   ├── Schematic_EasyCanad.json
+│   ├── PCB_EasyCanad.json
+│   └── README.txt
+├── cad/
+│   ├── vane-blade.STEP        # AOA 传感器叶片 3D 模型
+│   └── vane-body.SLDPRT       # AOA 传感器主体 3D 模型
+└── archive/
+    ├── firmware-v1-no-calibration.ino    # 早期版本（无零位校准）
+    └── firmware-v2-with-calibration.ino  # 零位校准版本（历史备份）
 ```
+
+> `archive/` 目录存放旧版固件代码，仅供历史参考。当前使用的固件为根目录下的 `EasyCanad.ino`。
 
 ## 许可证
 
