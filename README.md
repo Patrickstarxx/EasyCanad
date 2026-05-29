@@ -40,7 +40,7 @@ RC 俯仰通道 ───────── │ D2 (INT0)        │
 ## 编译与烧录
 
 1. 用 **Arduino IDE** 打开 `EasyCanad.ino`
-2. 选择开发板：**Arduino Nano**（ATmega328P）或 Uno
+2. 选择开发板：**Arduino Nano**（ATmega328P）
 3. `Servo.h` 和 `EEPROM.h` 为 IDE 自带，无需额外安装
 4. 点击 **上传**
 
