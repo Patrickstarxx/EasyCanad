@@ -1,0 +1,39 @@
+name: Firmware checks
+
+on:
+  push:
+    branches: [main, 'codex/**']
+    paths: ['*.ino', 'tests/**', '.github/workflows/firmware.yml']
+  pull_request:
+    paths: ['*.ino', 'tests/**', '.github/workflows/firmware.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  behavior:
+    name: Firmware behavior tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: python tests/run_tests.py
+
+  nano:
+    name: Nano (${{ matrix.cpu }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        cpu: [atmega328, atmega328old]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: arduino/setup-arduino-cli@v2
+      - name: Install pinned board core and servo library
+        run: |
+          arduino-cli core update-index
+          arduino-cli core install arduino:avr@1.8.6
+          arduino-cli lib install Servo@1.3.0
+      - name: Compile sketch
+        run: arduino-cli compile --fqbn arduino:avr:nano:cpu=${{ matrix.cpu }} --warnings all .
