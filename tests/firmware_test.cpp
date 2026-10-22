@@ -33,6 +33,7 @@ void issue(const std::string &text) {
 }
 void ready() {
   setup(); saveCalibration(rawToDeg(fakeAnalog));
+  config.throttleSchedule = 1; // 同时回归旧版油门代理模式。
   for (int i = 0; i < 100; ++i) tick(1500, 2000);
   CHECK(controller.sensorGoodSamples == 10 && controller.assistBlend > 0.99f);
 }
@@ -195,7 +196,7 @@ void testModeLoss() {
   CHECK(out.state == MODE_LOST && out.automaticDeg == 0 && m.assistBlend == 0 && out.manualDeg < 0);
 }
 void testThrottle() {
-  auto c = defaultConfig(); ControllerMemory m = {}; auto in = coreInput(540);
+  auto c = defaultConfig(); c.throttleSchedule = 1; ControllerMemory m = {}; auto in = coreInput(540);
   ControlOutput out = {};
   for (int i = 0; i < 100; ++i) out = controlStep(c, m, in);
   CHECK(near(out.effectiveGain, c.gain));
@@ -269,6 +270,13 @@ void testConfigPersistence() {
   CHECK(near(config.gain, 0.9f) && config.servoDirection == -1);
   EEPROM.data[CONFIG_SLOTS[activeConfigSlot] + 12] ^= 1; loadConfig();
   CHECK(near(config.gain, 0.9f) && config.servoDirection == 1);
+  EEPROM.data.fill(0xFF);
+  LegacyConfigRecord old = {CONFIG_MAGIC, 4, 7, {}, 0};
+  auto legacyConfig = defaultConfig(); legacyConfig.gain = 0.7f; legacyConfig.servoDirection = -1;
+  memcpy(old.configBytes, &legacyConfig, sizeof(old.configBytes));
+  old.crc = crc16(reinterpret_cast<const uint8_t *>(&old), offsetof(LegacyConfigRecord, crc));
+  EEPROM.put(CONFIG_SLOTS[0], old); loadConfig();
+  CHECK(near(config.gain, 0.7f) && config.servoDirection == -1 && config.speedModel.massGrams == 0);
 }
 void testConfigPowerLoss() {
   fakeGroundLevel = LOW; setup(); CHECK(setParameter("gain", 0.9f)); CHECK(saveConfig());
@@ -326,10 +334,31 @@ void testTelemetry() {
   CHECK(controller.commandDeg < 0 && logDropped > before);
   Serial.room = 7; Serial.largestWrite = 0; drain(); tick();
   CHECK(Serial.largestWrite <= 7);
-  CHECK(Serial.output.find("C,4,") != std::string::npos && Serial.output.find("R,") != std::string::npos);
+  CHECK(Serial.output.find("C,5,") != std::string::npos && Serial.output.find("R,") != std::string::npos);
+}
+void testSpeedHistory() {
+  auto c = defaultConfig(); c.speedModel = {800, 1000, 20, 5, 2}; c.throttleSchedule = 2;
+  CHECK(validConfig(c));
+  ControllerMemory m = {}; auto in = coreInput(512, 2000, 2000);
+  ControlOutput out = {};
+  for (int i = 0; i < 2000; ++i) out = controlStep(c, m, in);
+  const float fast = m.speed.speedMps;
+  CHECK(fast > 20 && out.state == ACTIVE && m.speed.status == SPEED_PREDICTING);
+  in.throttleUs = 1000;
+  for (int i = 0; i < 20; ++i) out = controlStep(c, m, in);
+  CHECK(m.speed.speedMps > fast * 0.9f); // 收油不能把高速状态立刻变成低速。
+  in.modeUs = 1000; controlStep(c, m, in);
+  CHECK(m.speed.status == SPEED_PREDICTING); // 手动切换不会清空速度历史。
+  in.flags &= ~THROTTLE_VALID; controlStep(c, m, in);
+  CHECK(m.speed.status == SPEED_INTERRUPTED);
+  in.flags |= THROTTLE_VALID; in.modeUs = 2000;
+  for (int i = 0; i < 30; ++i) out = controlStep(c, m, in);
+  CHECK(out.state == SPEED_MODEL_UNAVAILABLE);
 }
 void emitLog(const char *path) {
-  ready();
+  setup(); config.speedModel = {800, 1000, 20, 5, 2}; config.throttleSchedule = 2;
+  saveCalibration(rawToDeg(fakeAnalog));
+  for (int i = 0; i < 100; ++i) tick(1500, 2000);
   fakeAnalog = 540;
   for (int i = 0; i < 100; ++i) tick(1500, 2000, 1000 + i * 10);
   Serial.room = 0;
@@ -372,6 +401,7 @@ int main(int argc, char **argv) {
     else if (n == "calibration-integration") testCalibrationIntegration();
     else if (n == "button") testButton();
     else if (n == "telemetry") testTelemetry();
+    else if (n == "speed-history") testSpeedHistory();
     else if (n == "emit-log" && argc == 3) emitLog(argv[2]);
     else return 2;
     std::cout << "PASS " << n << '\n'; return 0;

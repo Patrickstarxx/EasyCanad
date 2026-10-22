@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <math.h>
+#include "SpeedModel.h"
 
 // 此文件同时用于机载控制和离线回放，不依赖 Arduino 或硬件。
 struct __attribute__((packed)) ControlConfig {
@@ -19,11 +20,12 @@ struct __attribute__((packed)) ControlConfig {
   int8_t rcDirection;
   int8_t aoaDirection;
   uint8_t throttleSchedule;
+  SpeedModelConfig speedModel;
 };
 
 enum ControlState : uint8_t {
   UNCALIBRATED, RC_LOST, CALIBRATING, SENSOR_FAULT, ACTIVE,
-  MANUAL, MODE_LOST, GROUND_CONFIG, THROTTLE_LOST
+  MANUAL, MODE_LOST, GROUND_CONFIG, THROTTLE_LOST, SPEED_MODEL_UNAVAILABLE
 };
 enum InputFlags : uint8_t {
   RC_VALID = 1, MODE_VALID = 2, THROTTLE_VALID = 4,
@@ -49,6 +51,7 @@ struct __attribute__((packed)) ControllerMemory {
   uint8_t sensorGoodSamples;
   uint8_t havePreviousRaw;
   uint8_t haveThrottle;
+  SpeedModelMemory speed;
 };
 struct ControlOutput {
   ControlState state;
@@ -59,7 +62,7 @@ struct ControlOutput {
   uint16_t servoUs;
 };
 
-static_assert(sizeof(float) == 4 && sizeof(ControlConfig) == 42 && sizeof(ControllerMemory) == 27,
+static_assert(sizeof(float) == 4 && sizeof(ControlConfig) == 59 && sizeof(ControllerMemory) == 36,
               "Log format requires packed 32-bit floats");
 
 inline float clampf(float x, float lo, float hi) { return x < lo ? lo : (x > hi ? hi : x); }
@@ -76,9 +79,9 @@ inline float normalizeRc(uint16_t width) {
   return delta > 0 ? (delta - 10) / 490 : (delta + 10) / 490;
 }
 inline ControlConfig defaultConfig() {
-  // 油门只是调度代理：默认最多把辅助增益降至一半，不计算或声称测得空速。
+  // 默认固定增益。填写机型参数后，模式 2 可按有历史状态的速度模型调度。
   ControlConfig c = {1.2f, 90, 90, 28333.333f, 360, 1, 0.5f, 500000,
-                     500, 1500, 2500, 1, 1, 1, 1};
+                     500, 1500, 2500, 1, 1, 1, 0, {0, 0, 0, 0, 2}};
   return c;
 }
 inline bool validConfig(const ControlConfig &c) {
@@ -96,7 +99,8 @@ inline bool validConfig(const ControlConfig &c) {
     c.servoMinUs % 4 == 0 && c.servoMaxUs % 4 == 0 &&
     (c.servoDirection == 1 || c.servoDirection == -1) &&
     (c.rcDirection == 1 || c.rcDirection == -1) &&
-    (c.aoaDirection == 1 || c.aoaDirection == -1) && c.throttleSchedule <= 1;
+    (c.aoaDirection == 1 || c.aoaDirection == -1) && c.throttleSchedule <= 2 && validSpeedFields(c.speedModel) &&
+    (c.throttleSchedule != 2 || validSpeedParameters(c.speedModel));
 }
 inline void resetController(ControllerMemory &m) { m = ControllerMemory{}; }
 inline int degToServoUs(const ControlConfig &c, float deg) {
@@ -111,7 +115,14 @@ inline ControlOutput controlStep(const ControlConfig &c, ControllerMemory &m, co
     resetController(m);
     return out;
   }
-  if (!(in.flags & RC_VALID)) { out.state = RC_LOST; resetController(m); return out; }
+  if (!(in.flags & RC_VALID)) {
+    out.state = RC_LOST;
+    SpeedModelMemory speed = m.speed;
+    if (speed.status == SPEED_PREDICTING) speed.status = SPEED_INTERRUPTED;
+    resetController(m);
+    m.speed = speed;
+    return out;
+  }
 
   const float raw = rawToDeg(in.aoaAdc);
   const float relative = wrap180(raw - in.zeroDeg);
@@ -139,6 +150,10 @@ inline ControlOutput controlStep(const ControlConfig &c, ControllerMemory &m, co
     else m.throttleNorm += boundedDt / (c.throttleTauUs + boundedDt) * (target - m.throttleNorm);
   } else m.haveThrottle = 0;
 
+  const bool speedInputsFresh = (in.flags & THROTTLE_VALID) && (in.flags & CAL_VALID) && m.sensorGoodSamples >= 10;
+  updateSpeedModel(c.speedModel, m.speed, requestAssist && m.modeAssistUs >= 100000,
+                   speedInputsFresh, m.throttleNorm, m.aoaFilt, in.elapsedUs);
+
   const float rc = normalizeRc(in.rcUs) * c.rcDirection;
   out.manualDeg = clampf(-rc * c.authorityDeg, -c.limitDeg, c.limitDeg);
   bool assistAllowed = false;
@@ -147,6 +162,7 @@ inline ControlOutput controlStep(const ControlConfig &c, ControllerMemory &m, co
   else if (!(in.flags & CAL_VALID)) out.state = UNCALIBRATED;
   else if (m.sensorGoodSamples < 10) out.state = SENSOR_FAULT;
   else if (c.throttleSchedule && !(in.flags & THROTTLE_VALID)) out.state = THROTTLE_LOST;
+  else if (c.throttleSchedule == 2 && m.speed.status != SPEED_PREDICTING) out.state = SPEED_MODEL_UNAVAILABLE;
   else { out.state = ACTIVE; assistAllowed = true; }
 
   const float blendStep = boundedDt / 300000.0f;
@@ -155,10 +171,13 @@ inline ControlOutput controlStep(const ControlConfig &c, ControllerMemory &m, co
   else m.assistBlend = 0;
   // 手动切换时允许补偿平滑退出；传感器/通道故障则立即撤掉补偿目标。
   const bool fading = out.state == MANUAL && (in.flags & CAL_VALID) && m.sensorGoodSamples >= 10 &&
-    (!c.throttleSchedule || (in.flags & THROTTLE_VALID));
+    (!c.throttleSchedule || (in.flags & THROTTLE_VALID)) &&
+    (c.throttleSchedule != 2 || m.speed.status == SPEED_PREDICTING);
   if (assistAllowed || fading) {
+    const float position = c.throttleSchedule == 2 ?
+      clampf(m.speed.speedMps / modelReferenceSpeed(c.speedModel), 0, 1) : m.throttleNorm;
     const float scale = c.throttleSchedule ?
-      c.throttleIdleScale + (c.throttleFullScale - c.throttleIdleScale) * m.throttleNorm : 1;
+      c.throttleIdleScale + (c.throttleFullScale - c.throttleIdleScale) * position : 1;
     out.effectiveGain = c.gain * scale * m.assistBlend;
     const float remaining = c.limitDeg - fabsf(out.manualDeg);
     out.automaticDeg = clampf(-out.effectiveGain * c.aoaDirection * m.aoaFilt, -remaining, remaining);

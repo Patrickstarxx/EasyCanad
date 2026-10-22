@@ -16,14 +16,18 @@ CONFIG_FIELDS = (
     "servo_min_us", "servo_mid_us", "servo_max_us", "servo_direction",
     "rc_direction", "aoa_direction", "throttle_schedule",
 )
+MODEL_FIELDS = ("model_mass_g", "model_thrust_g", "model_area_dm2", "model_initial_mps", "model_drag")
 
 
 def read_configuration(line):
     fields = line.strip().split(",")
-    if len(fields) != 4 or fields[:2] != ["C", "4"]:
+    if len(fields) != 4 or fields[0] != "C" or fields[1] not in ("4", "5"):
         raise ValueError("not a supported configuration record")
-    values = struct.unpack("<8f3H3bB", bytes.fromhex(fields[2]))
-    result = dict(zip(CONFIG_FIELDS, values))
+    version = int(fields[1])
+    layout = "<8f3H3bB" if version == 4 else "<8f3H3bB4fB"
+    values = struct.unpack(layout, bytes.fromhex(fields[2]))
+    result = dict(zip(CONFIG_FIELDS + (MODEL_FIELDS if version == 5 else ()), values))
+    result["log_version"] = version
     result["zero_deg"] = struct.unpack("<f", bytes.fromhex(fields[3]))[0]
     return result
 
@@ -45,7 +49,7 @@ def capture(args):
         have_config = False
         frames = 0
         with args.output.open("x", encoding="ascii", newline="") as output:
-            output.write("#EasyCanadLog,4\n")
+            output.write("#EasyCanadLog\n")
             print("Recording; Ctrl+C stops. Connecting USB can reset the Nano; connect on the ground.")
             try:
                 while args.duration == 0 or time.monotonic() - started < args.duration:
@@ -54,7 +58,7 @@ def capture(args):
                         continue
                     line = raw.decode("ascii", errors="replace").rstrip("\r\n")
                     if not have_config:
-                        if not line.startswith("C,4,"):
+                        if not line.startswith(("C,4,", "C,5,")):
                             continue
                         read_configuration(line)
                         have_config = True

@@ -12,7 +12,7 @@ CASES = (
     "rc-loss-output", "mapping", "manual-priority", "sensor", "manual-fallback", "direction-rate",
     "mode", "mode-loss", "throttle", "directions", "ground-lock", "ground-run", "parameters",
     "config-persistence", "config-power-loss", "calibration-seam", "calibration-reject",
-    "calibration-integration", "button", "telemetry",
+    "calibration-integration", "button", "telemetry", "speed-history",
 )
 
 
@@ -38,6 +38,8 @@ def main():
         for variant, variant_core in variants.items():
             print(f"Testing {variant}", flush=True)
             (work / "firmware_under_test.ino").write_text(source, encoding="utf-8")
+            for header in ROOT.glob("*.h"):
+                (work / header.name).write_text(header.read_text(encoding="utf-8"), encoding="utf-8")
             (work / "ControlCore.h").write_text(variant_core, encoding="utf-8")
             executable = work / ("firmware_test.exe" if os.name == "nt" else "firmware_test")
             subprocess.run(compiler + [
@@ -52,7 +54,7 @@ def main():
             subprocess.run([str(executable), "emit-log", str(log)], check=True)
             result = subprocess.run([str(replay), str(log)], check=True, capture_output=True, text=True)
             assert "mismatches=0" in result.stderr
-            assert "throttle_proxy" in result.stdout
+            assert "model_unobserved" in result.stdout
             print(f"PASS actual firmware log replay: {result.stderr.strip()}", flush=True)
             override = subprocess.run([str(replay), str(log), "--gain", "0.8"],
                 check=True, capture_output=True, text=True)
@@ -83,6 +85,8 @@ def main():
                 assert "gain_source" in exported.read_text(encoding="utf-8")
                 print("PASS capture-tool inspect/replay command-line integration", flush=True)
     subprocess.run([sys.executable, "-B", str(ROOT / "tests/test_flight_log.py")], check=True)
+    subprocess.run([sys.executable, str(ROOT / "tools/model_profiles.py"), "check",
+                    str(ROOT / "profiles/example.json")], check=True, capture_output=True)
     print(f"All {len(CASES) * len(variants)} scenarios passed.")
 
 

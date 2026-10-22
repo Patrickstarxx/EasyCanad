@@ -1,6 +1,6 @@
-# EasyCanad 固件 v4：模式切换、配置锁定与日志回放
+# EasyCanad 固件 v5：机型配置与有历史状态的速度模型
 
-当前程序使用攻角与接收机 PWM 控制鸭翼，支持手动/辅助切换、地面配置锁定、独立方向反转和油门代理增益调度。油门调度只反映油门输入趋势，**不输出估计空速，也不用于失速判断**。v3 有效攻角零位可继续使用；v1/v2 的旧零位仍需重新标定。
+当前程序使用攻角与接收机 PWM 控制鸭翼，支持手动/辅助切换、地面配置锁定、独立方向反转、机型配置和速度模型。新机型默认固定增益，可选择记录模型预测或按模型调度；预测缺少姿态/速度观测，不用于失速判断。v3 有效攻角零位可继续使用；v1/v2 的旧零位仍需重新标定。
 
 ## 接线
 
@@ -72,26 +72,64 @@ target = clamp(manual + automatic, ±limit)
 | 5 | MANUAL | 手动；切换后的短时间内辅助平滑退出 |
 | 6 | MODE_LOST | 模式 PWM 未收到/超时：退到手动并撤销辅助目标 |
 | 7 | GROUND_CONFIG | 地面配置状态：保持中位 |
-| 8 | THROTTLE_LOST | 启用油门调度但油门未收到/超时：退到手动 |
+| 8 | THROTTLE_LOST | 启用油门/模型调度但油门未收到/超时：退到手动 |
+| 9 | SPEED_MODEL_UNAVAILABLE | 选择模型调度但模型等待或中断：保留手动 |
 
 与 v3 不同，未标定时仍能使用手动模式。辅助模式必须有有效零位。攻角检查包括相对角度 ±90°、相邻样本变化不超过 45°；异常后连续 10 个合理样本才恢复。有效但错误的传感器读数不能仅靠这些检查全部识别。
 
 接收机无线失联后如果仍输出正常 PWM，单靠脉宽无法判断链路已经失联，应同时配置接收机自身的失控保护。
 
-## 油门代理增益调度
+## 机型配置与速度模型
 
-没有空速传感器或其他可观测速度的数据，无法从攻角、俯仰杆和油门唯一推算真实空速。因此这里使用可配置的油门调度，日志来源标记 `throttle_proxy`，没有任何 m/s 数值。
+上位机启动命令：
 
-```text
-throttleNorm = clamp((throttlePWM - 1000) / 1000, 0, 1)
-throttleFiltered += dt / (throttleTau + dt) × (throttleNorm - throttleFiltered)
-throttleScale = idleScale + (fullScale - idleScale) × throttleFiltered
-effectiveGain = gain × throttleScale × assistBlend
+Windows 可直接双击根目录的 `OpenModelConfig.cmd`（需要已安装 Python 和 Tkinter）。
+
+```sh
+python -m pip install -r tools/requirements.txt
+python tools/model_profiles.py
 ```
 
-默认低油门系数 1、高油门系数 0.5、油门滤波时间 500ms，基础增益 1.2。参数限制 `0 ≤ fullScale ≤ idleScale ≤ 1`，调度最多降低基础增益。油门和空速在滑翔、俯冲、逆风等情况下可能差别很大，这些默认值需要用实际机体试验调整。
+窗口填写四项基础参数，每个机型保存一份 JSON：
 
-若不使用油门调度，在 GROUND 发送 `set throttle_schedule 0` 和 `save`，辅助改用固定基础增益，D7 可不接。启用时 D7 超时会关闭辅助，手动继续可用。油门通道应提供低油门 1000μs、高油门 2000μs 的方向。
+| 参数 | 如何获取 |
+|---|---|
+| 起飞重量 g | 装好电池、接收机和舵机后称重 |
+| 满油门静推力 g | 动力套装同电池/桨配置的规格或推力测量；工具自动计算推重比 |
+| 参考翼面积 dm² | 说明书或 CAD 图；100cm² = 1dm²，需明确统一的参考面积 |
+| 低/中/高阻力档位 | 对该机型的粗略阻力假设，可分别比较预测；不代表实测气动系数 |
+
+可选初始速度单位 m/s，表示**第一次有效进入辅助时**使用的初始估计。默认 0 只适用于从静止起算；手抛、空中开启辅助、被手持时开油门的初值误差不会自行消失。
+
+窗口默认不勾选“将模型预测用于增益调度”：上传后保持固定增益，同时记录预测。勾选后选择模式 2，按速度历史调度。连接前在地面将 D5 接 GND，上电进入 GROUND；上位机修改、保存并回读，只允许在地面写入，不自动发送 run。写完后可断电、拆掉 D5 跳线，再重新上电运行。USB 连接可能使 Nano 复位。
+
+也可用命令行检查和写入：
+
+```sh
+python tools/model_profiles.py check profiles/example.json
+python tools/model_profiles.py apply profiles/my-plane.json --port COM5
+```
+
+example.json 只是格式示例，不能当成实机参数。机型 JSON 只管理模型参数和是否启用模型调度，不覆盖舵机方向、端点或其他控制参数。
+
+模型假定近似水平飞行：
+
+```text
+u = filteredThrottle
+T = staticThrust × u² × max(0, cos(relativeAOA))
+Cd = Cd0 + 0.8 × sin²(relativeAOA)
+a = (T - 0.5 × density × speed² × wingArea × Cd) / mass
+```
+
+按实际时间积分，收油后保留速度并随阻力衰减，重新加油从已有速度继续加速。用不超过 10ms 的子步和半隐式阻力积分。固定空气密度 1.225kg/m³；阻力档位的 Cd0 为 0.035、0.06、0.10。这些是本实现的工程假设，不能据此宣称真实速度预测更准确。
+
+模型首次进入辅助时开始，切回手动后继续积分。油门/攻角等必要输入丢失或控制间隔超过 100ms 后标记中断，不再凭空重置成低速；进入地面配置或重新上电后可重新开始。
+
+无 IMU、GPS 或空速输入，模型无法识别爬升/俯冲、阵风、被手持约束、推力随电池/来流变化等影响。当前风标只提供相对校准零位的角度，也不是完整气动模型。输出始终叫 **model_unobserved（无独立观测的预测）**，没有精度保证和置信概率。
+
+模型调度使用预测速度相对“同一模型推算的水平满油门平衡速度”的比例，在原有高低调度系数之间线性变化，仍受辅助权重、人工优先和舵面限幅约束；不使用全范围 1/V² 放大。没有对应机型参数时不能启用模式 2。
+
+旧模式 1 保留直接油门代理：按经过滤波的油门，在 throttle_idle 与 throttle_full 之间调度。模式 0 为固定增益。**新配置默认模式 0**；升级加载 v4 配置时保留原模式。有效 v3 攻角零位继续沿用。
 
 ## 配置命令
 
@@ -110,10 +148,15 @@ effectiveGain = gain × throttleScale × assistBlend
 | `set servo_max 2300` | 最大端点，500～2500μs，须为 4μs 的整数倍 |
 | `set filter_ms 28.333333` | 攻角滤波时间，1～1000ms |
 | `set slew 360` | 指令变化速率，10～1000°/s |
-| `set throttle_schedule 1` | 1 油门调度，0 固定增益 |
+| `set throttle_schedule 2` | 0 固定，1 旧油门代理，2 速度模型调度（需完整机型参数） |
 | `set throttle_idle 1` | 低油门系数，0～1 |
 | `set throttle_full 0.5` | 高油门系数，0～低油门系数 |
 | `set throttle_tau_ms 500` | 油门滤波时间，10～5000ms |
+| `set model_mass_g 800` | 起飞重量，10～20000g |
+| `set model_thrust_g 1000` | 满油门静推力，(0, 50000]g |
+| `set model_area_dm2 20` | 参考翼面积，0.1～500dm² |
+| `set model_drag 2` | 阻力档位：1 低、2 中、3 高 |
+| `set model_initial_mps 0` | 首次辅助时的初始速度假设，0～100m/s |
 | `save` | 把当前配置保存到下一个 EEPROM 槽 |
 | `defaults` | 本次会话恢复默认参数，尚未保存；不清除攻角零位 |
 | `run` | 拔掉跳线且满足手动/中位条件后进入锁定运行状态 |
@@ -147,27 +190,47 @@ python tools/flight_log.py replay logs/flight.ecsv --gain 0.8 --output logs/gain
 # 可追加 --compiler /path/to/g++，或 --compiler /path/to/zig.exe
 ```
 
-不覆盖参数时，回放核对状态、指令角度、舵机脉宽、有效增益、混合权重及增益来源；允许主机与 AVR 浮点计算产生约 1μs / 0.02°的舍入差别。参数覆盖用于比较算法输出，关闭与原舵令的一致性判定。**这是已记录输入的控制器回放，不模拟改变舵令之后飞机、气流和传感器会如何变化。**
+不覆盖参数时，回放核对状态、指令角度、舵机脉宽、有效增益、混合权重、增益来源及速度模型状态；允许主机与 AVR 浮点计算产生约 1μs / 0.02°的舍入差别。参数覆盖用于比较算法输出，关闭与原舵令的一致性判定。**这是已记录输入的控制器回放，不模拟改变舵令之后飞机、气流和传感器会如何变化。**
 
 日志拥塞时丢帧并累计计数，控制循环继续运行。下一条可发送的数据前会附上完整算法状态快照，回放在此重同步；缺失区间本身无法恢复。若文件丢失了帧且没有对应快照，回放报错而不会把结果当作完整验证。修改增益后的对比也会在快照处恢复记录时的动态状态，跨缺失区间不能视为连续仿真。
 
-### 原始记录格式 v4
+### 原始记录格式 v5（工具兼容 v4）
 
-- `C,4,configHex,zeroHex`：小端二进制十六进制配置和攻角零位，避免浮点文本丢失精度。配置布局为 `<8f3H3bB`（42 字节）。
-- `R,memoryHex`：下一帧计算之前的控制器状态，布局 `<5fI3B`（27 字节）。
+- `C,5,configHex,zeroHex`：小端二进制十六进制配置和攻角零位，避免浮点文本丢失精度。配置布局为 `<8f3H3bB4fB`（59 字节）。
+- `R,memoryHex`：下一帧计算之前的控制器状态，布局 `<5fI3BfIB`（36 字节）。
 - `E,event,cal_status`：命令事件。
 - `D,...`：每个 5ms 控制周期尝试记录一次，字段如下：
 
 ```text
 D,seq,t_us,dt_us,aoa_adc,rc_us,mode_us,throttle_us,flags,state,cmd_cdeg,
-servo_us,gain_milli,blend_milli,gain_source,drop,miss,cal_status,max_interval_us
+servo_us,gain_milli,blend_milli,gain_source,drop,miss,cal_status,max_interval_us,
+model_speed_cmps,model_status,model_age_ms
 ```
 
-上述字段在实际文件中为单行。角度单位 0.01°；增益和权重单位 0.001。增益来源：0 无补偿、1 固定、2 油门代理。
+上述字段在实际文件中为单行。角度单位 0.01°；增益和权重单位 0.001。增益来源：0 无补偿、1 固定、2 油门代理、3 无观测速度模型。model_speed_cmps 单位为 cm/s；model_status：0 等待、1 预测中（未观测校正）、2 输入中断；model_age_ms 为累计积分时间，按毫秒取整。
 
 flags 位：1 俯仰有效、2 模式有效、4 油门有效、8 攻角零位有效、16 地面配置、32 标定中。原始 PWM 可能保留最后一次值，是否有效以 flags 为准。
 
 `seq` 每个控制周期递增，暂停日志期间也递增；`drop` 只统计日志启用时未能记录的帧。`miss` 为未执行的完整 5ms 周期数，`max_interval_us` 为最长实际控制间隔；标定和配置保存时间也会反映在统计中。
+
+## 代码模块
+
+| 文件 | 职责 |
+|---|---|
+| EasyCanad.ino | 初始化硬件、采样、调用控制和记录 |
+| ControlCore.h | 无硬件依赖的控制、模式与混控 |
+| SpeedModel.h | 机型参数和速度历史积分 |
+| FirmwareState.h | 引脚、协议记录和固件共享状态 |
+| PwmInput.h | 三路中断捕获和超时 |
+| EepromStorage.h | CRC 与提交写入 |
+| CalibrationStore.h | 按钮及攻角零位标定 |
+| ConfigStore.h | 双槽配置、v4 升级兼容 |
+| SerialConsole.h | 地面配置命令 |
+| FlightLogger.h | 配置/状态快照与控制帧发送 |
+| tools/model_profiles.py | 机型参数窗口、JSON 和地面写入 |
+| tools/flight_log.py / replay.cpp | 采集、检查和共用算法回放 |
+
+实现选择与未观测项见 [DECISIONS.md](DECISIONS.md)。
 
 ## 验证
 
