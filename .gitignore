@@ -22,3 +22,7 @@ Desktop.ini
 
 # Dependencies (if using PlatformIO)
 .pio/
+
+# Local control recordings and Python caches
+logs/
+__pycache__/

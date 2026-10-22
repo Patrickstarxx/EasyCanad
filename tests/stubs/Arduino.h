@@ -12,10 +12,19 @@ extern uint32_t fakeMicros;
 extern int fakeAnalog;
 extern int fakeRcLevel;
 extern int fakeButtonLevel;
+extern int fakeModeLevel;
+extern int fakeThrottleLevel;
+extern int fakeGroundLevel;
 inline uint32_t micros() { return fakeMicros; }
 inline uint32_t millis() { return fakeMicros / 1000; }
 inline void pinMode(uint8_t, int) {}
-inline int digitalRead(uint8_t pin) { return pin == 4 ? fakeButtonLevel : fakeRcLevel; }
+inline int digitalRead(uint8_t pin) {
+  if (pin == 4) return fakeButtonLevel;
+  if (pin == 3) return fakeModeLevel;
+  if (pin == 5) return fakeGroundLevel;
+  if (pin == 7) return fakeThrottleLevel;
+  return fakeRcLevel;
+}
 inline int analogRead(uint8_t) { return fakeAnalog; }
 inline int digitalPinToInterrupt(uint8_t pin) { return pin; }
 inline void attachInterrupt(int, void (*)(), int) {}
@@ -27,7 +36,11 @@ struct FakeSerial {
   int room = 63;
   size_t largestWrite = 0;
   std::string output;
+  std::string input;
+  size_t readOffset = 0;
   void begin(unsigned long) {}
+  int available() { return static_cast<int>(input.size() - readOffset); }
+  int read() { return available() ? static_cast<unsigned char>(input[readOffset++]) : -1; }
   int availableForWrite() { return room; }
   size_t write(const uint8_t *bytes, size_t count) {
     if (count > static_cast<size_t>(room)) std::abort();

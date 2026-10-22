@@ -3,9 +3,9 @@ name: Firmware checks
 on:
   push:
     branches: [main, 'codex/**']
-    paths: ['*.ino', 'tests/**', '.github/workflows/firmware.yml']
+    paths: ['*.ino', '*.h', 'tests/**', 'tools/**', '.github/workflows/firmware.yml']
   pull_request:
-    paths: ['*.ino', 'tests/**', '.github/workflows/firmware.yml']
+    paths: ['*.ino', '*.h', 'tests/**', 'tools/**', '.github/workflows/firmware.yml']
 
 permissions:
   contents: read
