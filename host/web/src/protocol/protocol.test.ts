@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { configErrors, decodeConfigLine, DEFAULT_CONFIG, encodeConfigLine, planChanges } from './config';
+import { configErrors, configIssues, decodeConfigLine, DEFAULT_CONFIG, encodeConfigLine, parameterSupported, planChanges } from './config';
 import { DeviceSession } from './deviceSession';
-import { decodeDataLine, parseLog } from './log';
+import { decodeDataLine, frameTimelineUs, parseLog } from './log';
 import { profileFromJson } from './profile';
 import { SimulatedDevice } from '../transport/simulatedDevice';
 import type { LineTransport } from '../transport/lineTransport';
@@ -41,6 +41,10 @@ describe('firmware records', () => {
     const narrower = { ...wideTrim, limitDeg: 30, trimDeg: 20 };
     expect(planChanges(wideTrim, narrower, 6)).toEqual(['set trim_deg 20', 'set limit 30']);
     expect(configErrors({ ...newLaw, throttleSchedule: 2 })).not.toEqual([]);
+    expect(configIssues({ ...DEFAULT_CONFIG, trimDeg: 100 })[0].keys).toContain('trimDeg');
+    expect(parameterSupported('lawMode', 5)).toBe(false);
+    expect(parameterSupported('modelMassGrams', 4)).toBe(false);
+    expect(parameterSupported('gain', 4)).toBe(true);
   });
 
   it('decodes control data and rejects missing configuration', () => {
@@ -49,6 +53,16 @@ describe('firmware records', () => {
     const parsed = parseLog(`#EasyCanadLog\nC,6,${firmwareV6},${zero}\nR,abc\n${line}\n`);
     expect(parsed.frames).toHaveLength(1);
     expect(() => parseLog(line)).toThrow('缺少配置');
+    const frame = decodeDataLine(line, 6);
+    expect(frameTimelineUs([
+      { ...frame, sequence: 1, timeUs: 1000 },
+      { ...frame, sequence: 2, timeUs: 6000 },
+      { ...frame, sequence: 3, timeUs: 21000 },
+    ])).toEqual([0, 5000, 20000]);
+    expect(frameTimelineUs([
+      { ...frame, sequence: 1, timeUs: 0xffffff00 },
+      { ...frame, sequence: 2, timeUs: 0x100 },
+    ])).toEqual([0, 512]);
   });
 });
 
@@ -58,6 +72,7 @@ describe('ground configuration session', () => {
     const session = new DeviceSession(transport);
     const original = await session.connect();
     expect(session.state.ground).toBe(true);
+    expect(session.state.saved).toBeNull();
     const desired = { ...original.config, lawMode: 1, trimDeg: 5,
       aoaReferenceDeg: 3, compensationRatio: 0.5 };
     const applied = await session.apply(desired);

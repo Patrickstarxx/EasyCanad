@@ -8,6 +8,19 @@ export type DataFrame = {
   maxIntervalUs: number; modelSpeedMps: number; modelStatus: number; modelAgeMs: number;
 };
 export type ParsedLog = { config: ConfigSnapshot; frames: DataFrame[]; raw: string; gaps: number };
+
+export function frameTimelineUs(frames: DataFrame[]): number[] {
+  if (!frames.length) return [];
+  const times = [0];
+  for (let index = 1; index < frames.length; index++) {
+    const previous = frames[index - 1];
+    const frame = frames[index];
+    let delta = frame.timeUs - previous.timeUs;
+    if (delta < 0) delta = frame.sequence > previous.sequence ? delta + 0x100000000 : frame.elapsedUs;
+    times.push(times[index - 1] + Math.max(0, delta));
+  }
+  return times;
+}
 export const STATE_NAMES = [
   '未标定', '俯仰失联', '标定中', '风标异常', '辅助有效', '手动',
   '模式失联', '地面配置', '油门失联', '模型不可用',

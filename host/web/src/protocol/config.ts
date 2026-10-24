@@ -69,39 +69,53 @@ export function normalizeConfig(config: ControlConfig): ControlConfig {
   return copy;
 }
 
-export function configErrors(c: ControlConfig): string[] {
-  const errors: string[] = [];
-  for (const key of CONFIG_KEYS) if (!Number.isFinite(c[key])) errors.push(`${key} 不是有限数值`);
-  if (errors.length) return errors;
-  const range = (ok: boolean, message: string) => { if (!ok) errors.push(message); };
-  range(c.gain >= 0 && c.gain <= 5, '旧控制律增益须在 0～5');
-  range(c.authorityDeg >= 0 && c.authorityDeg <= 90, '遥控权限须在 0～90°');
-  range(c.limitDeg > 0 && c.limitDeg <= 90, '舵角限幅须在 (0, 90]°');
-  range(c.filterTauUs >= 1000 && c.filterTauUs <= 1_000_000, '风标滤波须在 1～1000 ms');
-  range(c.slewDegSec >= 10 && c.slewDegSec <= 1000, '舵令速率须在 10～1000°/s');
+export type ConfigIssue = { keys: ConfigKey[]; message: string };
+
+export function parameterSupported(key: ConfigKey, version: number): boolean {
+  if (version < 6 && ['trimDeg', 'aoaReferenceDeg', 'compensationRatio', 'lawMode'].includes(key)) return false;
+  if (version < 5 && key.startsWith('model')) return false;
+  return true;
+}
+
+export function configIssues(c: ControlConfig): ConfigIssue[] {
+  const issues: ConfigIssue[] = [];
+  for (const key of CONFIG_KEYS) if (!Number.isFinite(c[key])) issues.push({ keys: [key], message: `${key} 不是有限数值` });
+  if (issues.length) return issues;
+  const range = (ok: boolean, keys: ConfigKey[], message: string) => { if (!ok) issues.push({ keys, message }); };
+  range(c.gain >= 0 && c.gain <= 5, ['gain'], '旧控制律增益须在 0～5');
+  range(c.authorityDeg >= 0 && c.authorityDeg <= 90, ['authorityDeg'], '遥控权限须在 0～90°');
+  range(c.limitDeg > 0 && c.limitDeg <= 90, ['limitDeg'], '舵角限幅须在 (0, 90]°');
+  range(c.filterTauUs >= 1000 && c.filterTauUs <= 1_000_000, ['filterTauUs'], '风标滤波须在 1～1000 ms');
+  range(c.slewDegSec >= 10 && c.slewDegSec <= 1000, ['slewDegSec'], '舵令速率须在 10～1000°/s');
   range(c.throttleIdleScale >= 0 && c.throttleIdleScale <= 1 &&
-    c.throttleFullScale >= 0 && c.throttleFullScale <= c.throttleIdleScale, '油门系数范围或顺序错误');
-  range(c.throttleTauUs >= 10_000 && c.throttleTauUs <= 5_000_000, '油门滤波须在 10～5000 ms');
+    c.throttleFullScale >= 0 && c.throttleFullScale <= c.throttleIdleScale,
+  ['throttleIdleScale', 'throttleFullScale'], '油门系数范围或顺序错误');
+  range(c.throttleTauUs >= 10_000 && c.throttleTauUs <= 5_000_000, ['throttleTauUs'], '油门滤波须在 10～5000 ms');
   range(Number.isInteger(c.servoMinUs) && Number.isInteger(c.servoMidUs) && Number.isInteger(c.servoMaxUs) &&
     c.servoMinUs >= 500 && c.servoMaxUs <= 2500 && c.servoMinUs < c.servoMidUs &&
     c.servoMidUs < c.servoMaxUs && c.servoMinUs % 4 === 0 && c.servoMaxUs % 4 === 0,
-  '舵机端点须有序，最小/最大值为 4 μs 的倍数');
-  range([c.servoDirection, c.rcDirection, c.aoaDirection].every(v => v === 1 || v === -1), '方向只能为 ±1');
-  range(Number.isInteger(c.throttleSchedule) && c.throttleSchedule >= 0 && c.throttleSchedule <= 2, '调度模式无效');
+  ['servoMinUs', 'servoMidUs', 'servoMaxUs'], '舵机端点须有序，最小/最大值为 4 μs 的倍数');
+  range([c.servoDirection, c.rcDirection, c.aoaDirection].every(v => v === 1 || v === -1),
+    ['servoDirection', 'rcDirection', 'aoaDirection'], '方向只能为 ±1');
+  range(Number.isInteger(c.throttleSchedule) && c.throttleSchedule >= 0 && c.throttleSchedule <= 2,
+    ['throttleSchedule'], '调度模式无效');
   range((c.modelMassGrams === 0 || c.modelMassGrams >= 10) && c.modelMassGrams <= 20_000 &&
     c.modelStaticThrustGrams >= 0 && c.modelStaticThrustGrams <= 50_000 &&
     (c.modelWingAreaDm2 === 0 || c.modelWingAreaDm2 >= 0.1) && c.modelWingAreaDm2 <= 500 &&
     c.modelInitialSpeedMps >= 0 && c.modelInitialSpeedMps <= 100 &&
-    Number.isInteger(c.modelDragPreset) && c.modelDragPreset >= 1 && c.modelDragPreset <= 3, '机型模型参数范围错误');
+    Number.isInteger(c.modelDragPreset) && c.modelDragPreset >= 1 && c.modelDragPreset <= 3,
+  ['modelMassGrams', 'modelStaticThrustGrams', 'modelWingAreaDm2', 'modelInitialSpeedMps', 'modelDragPreset'], '机型模型参数范围错误');
   range(c.throttleSchedule !== 2 || (c.modelMassGrams > 0 && c.modelStaticThrustGrams > 0 && c.modelWingAreaDm2 > 0),
-    '速度模型调度需要完整机型参数');
-  range(Math.abs(c.trimDeg) <= c.limitDeg, '配平角不能超过舵角限幅');
-  range(Math.abs(c.aoaReferenceDeg) <= 90, '风标参考角须在 ±90°');
-  range(c.compensationRatio >= 0 && c.compensationRatio <= 1, '补偿比例须在 0～1');
-  range(Number.isInteger(c.lawMode) && (c.lawMode === 0 || c.lawMode === 1), '控制律模式无效');
-  range(c.lawMode !== 1 || c.throttleSchedule === 0, '部分补偿控制律要求固定调度模式');
-  return errors;
+    ['throttleSchedule', 'modelMassGrams', 'modelStaticThrustGrams', 'modelWingAreaDm2'], '速度模型调度需要完整机型参数');
+  range(Math.abs(c.trimDeg) <= c.limitDeg, ['trimDeg', 'limitDeg'], '配平角不能超过舵角限幅');
+  range(Math.abs(c.aoaReferenceDeg) <= 90, ['aoaReferenceDeg'], '风标参考角须在 ±90°');
+  range(c.compensationRatio >= 0 && c.compensationRatio <= 1, ['compensationRatio'], '补偿比例须在 0～1');
+  range(Number.isInteger(c.lawMode) && (c.lawMode === 0 || c.lawMode === 1), ['lawMode'], '控制律模式无效');
+  range(c.lawMode !== 1 || c.throttleSchedule === 0, ['lawMode', 'throttleSchedule'], '部分补偿控制律要求固定调度模式');
+  return issues;
 }
+
+export function configErrors(c: ControlConfig): string[] { return configIssues(c).map(issue => issue.message); }
 
 function bytesFromHex(hex: string): Uint8Array {
   if (hex.length % 2 || !/^[0-9a-f]+$/i.test(hex)) throw new Error('配置十六进制记录无效');

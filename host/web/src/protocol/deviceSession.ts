@@ -5,8 +5,8 @@ import type { LineTransport } from '../transport/lineTransport';
 type Waiter = { match: (line: string) => boolean; resolve: (line: string) => void; reject: (error: Error) => void; timer: ReturnType<typeof setTimeout> };
 export type DeviceState = {
   connected: boolean; kind: 'serial' | 'simulation'; ground: boolean | null;
-  config?: ConfigSnapshot; live?: DataFrame; lastEvent?: string;
-  saved: boolean; recording: boolean; lines: string[]; recordedFrames: number; error?: string;
+  config?: ConfigSnapshot; live?: DataFrame; lastFrameAt?: number; lastEvent?: string;
+  saved: boolean | null; recording: boolean; lines: string[]; recordedFrames: number; error?: string;
 };
 
 export class DeviceSession {
@@ -18,7 +18,7 @@ export class DeviceSession {
   private lastLiveNotice = 0;
 
   constructor(private readonly transport: LineTransport) {
-    this.state = { connected: false, kind: transport.kind, ground: null, saved: true, recording: false, lines: [], recordedFrames: 0 };
+    this.state = { connected: false, kind: transport.kind, ground: null, saved: null, recording: false, lines: [], recordedFrames: 0 };
   }
 
   subscribe(listener: () => void): () => void {
@@ -43,8 +43,11 @@ export class DeviceSession {
         this.state.lastEvent = event;
         if (event === 'GROUND') this.state.ground = true;
         if (event === 'RUN_LOCKED') this.state.ground = false;
+        if (event === 'SET_UNSAVED' || event === 'DEFAULTS_UNSAVED') this.state.saved = false;
+        if (event === 'SAVED') this.state.saved = true;
       } else if (line.startsWith('D,') && this.state.config) {
         this.state.live = decodeDataLine(line, this.state.config.version);
+        this.state.lastFrameAt = performance.now();
         for (const listener of this.frameListeners) listener(this.state.live);
       }
     } catch (error) {
@@ -65,6 +68,8 @@ export class DeviceSession {
     this.state.connected = false;
     this.state.ground = null;
     this.state.recording = false;
+    this.state.live = undefined;
+    this.state.lastFrameAt = undefined;
     if (reason) this.state.error = reason;
     for (const waiter of this.waiters.splice(0)) {
       clearTimeout(waiter.timer);
