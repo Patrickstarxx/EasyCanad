@@ -464,7 +464,6 @@ function readProfiles(): Profile[] {
 function saveProfiles(profiles: Profile[]): void { localStorage.setItem('easycanad-profiles-v2', JSON.stringify(profiles)); }
 
 async function loadProfile(profile: Profile): Promise<void> {
-  if (!await confirmDiscardDraft(`载入“${profile.name}”`)) return;
   const next = { ...profile.config };
   const current = session?.state.config;
   const skipped: string[] = [];
@@ -474,6 +473,9 @@ async function loadProfile(profile: Profile): Promise<void> {
       skipped.push(spec.label);
     }
   }
+  const warning = hasPendingDraft() ? '当前未应用的草稿会被替换。\n' : '';
+  const differences = current ? `与设备配置的差异：\n${describeChanges(current.config, next)}` : '当前离线，载入后可以检查草稿。';
+  if (!await confirmAction(`载入“${profile.name}”？`, `${warning}载入只会修改草稿，不会写入设备。\n${skipped.length ? `当前固件不支持的 ${skipped.length} 项将保留设备原值。\n` : ''}\n${differences}`, '载入草稿')) return;
   replaceDraft(next);
   page = 'config'; renderPage();
   notice(skipped.length ? `已载入草稿；设备固件不支持的 ${skipped.length} 项已保留设备原值。` : `已将“${profile.name}”载入草稿。`);
