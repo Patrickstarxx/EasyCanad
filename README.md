@@ -1,138 +1,46 @@
-# EasyCanad — 鸭翼飞行器 AOA 反馈控制器
+# EasyCanad｜鸭翼迎角反馈控制器
 
-**当前固件 v6：** 支持独立配平、风标参考角和可调部分迎角补偿。接线、操作和控制律见 [FIRMWARE.md](FIRMWARE.md)；Windows / Android 网页上位机见 [host/README.md](host/README.md)。下文保留早期固件参考，当前参数与串口速率以固件说明为准。
+EasyCanad 是基于 Arduino Nano 的独立鸭翼控制实验项目：读取风标迎角和接收机输入，计算鸭翼舵机指令。仓库同时保存早期原型，以及正在验证的模块化固件和网页上位机。
 
-基于 Arduino 的鸭翼（canard）飞行器控制系统，支持 AOA 攻角传感器反馈、单路 PWM 遥控输入（俯仰/升降通道），以及 EEPROM 一键零位校准。
+> **请选择与代码版本对应的接线和操作说明。** 默认分支 `main` 仍是早期原型；v6 固件与上位机尚在草稿 PR 中。当前没有台架或实机飞行验证结果。
 
-## 功能特性
+## 代码与验证状态
 
-- **AOA 反馈稳定**：通过模拟攻角传感器闭环控制鸭翼，自动对准来流
-- **RC 遥控叠加**：俯仰（升降）通道 PWM 输入，在 AOA 稳定基础上叠加人工机动
-- **一键零位校准**：按下按钮即记录当前攻角为零位，保存到 EEPROM，断电不丢失
-- **200Hz 控制刷新**：5ms 控制周期，一阶低通滤波平滑传感器数据
-- **串口调试输出**：115200 baud 实时输出 AOA、RC 脉宽、鸭翼指令角度
+| 版本 | 内容 | 使用说明 |
+| --- | --- | --- |
+| [`main`](https://github.com/Patrickstarxx/EasyCanad/tree/main) | 早期单通道 Arduino 原型：A0 风标、D2 俯仰 PWM、D4 标定按钮、D9 舵机；串口 115200 baud | 见下方“默认分支原型” |
+| [草稿 PR #1](https://github.com/Patrickstarxx/EasyCanad/pull/1) | 模块化 v6 固件：独立手动/辅助模式、地面配置锁定、故障处理、机型模型、日志回放，以及独立配平和可调迎角补偿 | [固件接线与操作](https://github.com/Patrickstarxx/EasyCanad/blob/codex/fix-firmware-control-safety/FIRMWARE.md) · [台架检查表](https://github.com/Patrickstarxx/EasyCanad/blob/codex/fix-firmware-control-safety/BENCH_TEST_PLAN.md) |
+| [草稿 PR #2](https://github.com/Patrickstarxx/EasyCanad/pull/2) | 与 v6 配套的 Windows / Android 网页上位机：设备状态、调参、机型档案、日志曲线和模拟设备 | [上位机说明](https://github.com/Patrickstarxx/EasyCanad/blob/codex/host-configurator/host/README.md) |
 
-## 硬件连接
+PR #2 基于 PR #1；使用上位机连接真实控制器时，应配套相应固件。v6 的软件测试和构建检查已通过，风标方向、舵机行程、失控保护、真实 USB 通信及 Android 兼容性仍需实物验证。模型估算速度不是独立测得的空速。
 
-### 引脚接线表
+## 默认分支原型
 
-| Arduino 引脚 | 连接设备 | 说明 |
-|-------------|---------|------|
-| **A0** | AOA 攻角传感器 | 模拟输入 0~5V，对应 -180°~+180° |
-| **D2** | RC 接收机 — 俯仰(升降)通道 | PWM 输入，INT0 中断捕获 |
-| **D4** | 标定按钮 | 按下接 GND（INPUT_PULLUP，常开） |
-| **D9** | 鸭翼舵机 | PWM 输出 500~2500μs |
+`main` 中的 [`EasyCanad.ino`](EasyCanad.ino) 是单文件固件。它按约 5 ms 周期读取 A0 风标与 D2 俯仰 PWM，使用 D4 按钮保存风标零位，并从 D9 输出舵机脉宽。其串口调试速率为 **115200 baud**；本段接线和速率不适用于草稿 PR 中的 v6 固件。
 
-### 接线示意
+| Nano 引脚 | 默认分支用途 |
+| --- | --- |
+| A0 | 模拟风标迎角输入 |
+| D2 | 接收机俯仰 PWM 输入 |
+| D4 | 风标零位标定按钮，按下接 GND |
+| D9 | 鸭翼舵机信号输出 |
 
-```
-                      ┌──────────────────┐
-                      │    Arduino       │
-                      │                  │
-AOA 传感器 ────────── │ A0           D9  │ ─── 鸭翼舵机
-RC 俯仰通道 ───────── │ D2 (INT0)        │
-标定按钮 ──────────── │ D4               │
-                      │                  │
-5V ────────────────── │ 5V           GND │ ─── GND
-                      └──────────────────┘
-```
+用 Arduino IDE 打开 `EasyCanad.ino`，选择 Arduino Nano（ATmega328P）并上传。舵机应使用符合其负载要求的独立供电，并与 Nano 共地。原型中的参数写在程序内；需要地面配置、日志和 v6 控制律时，请按 PR #1 的固件说明操作。
 
-> **注意**：舵机供电建议使用独立 BEC，不要从 Arduino 5V 引脚取电，否则大电流可能导致复位。
+## 硬件与资料
 
-## 编译与烧录
+- [物料清单](BOM.md)与 [`hardware/`](hardware/) 中的原理图、PCB JSON、导入说明和离线包。
+- [`cad/`](cad/) 中的风标叶片与主体模型。
+- [`archive/`](archive/) 中的早期固件备份。
 
-1. 用 **Arduino IDE** 打开 `EasyCanad.ino`
-2. 选择开发板：**Arduino Nano**（ATmega328P）
-3. `Servo.h` 和 `EEPROM.h` 为 IDE 自带，无需额外安装
-4. 点击 **上传**
+![EasyCanad PCB 预览](hardware/previewPCB.png)
 
-## PCB 文件
+现有 PCB 尚未为 v6 新增的 D3 模式、D5 地面跳线和 D7 油门接口改版。按 v6 固件接线前，请先核对实际板卡和引线。
 
-PCB 设计文件位于 `hardware/` 目录，包含：
+## 目前还缺少的验证
 
-- `Schematic_EasyCanad.json`：立创 EDA / EasyEDA 原理图源文件
-- `PCB_EasyCanad.json`：立创 EDA / EasyEDA PCB 源文件
-- `README.txt`：离线文件导入说明
+- v6 的台架测量：风标角度、鸭翼真实偏角、舵机端点、方向、延迟、故障退出与接收机失控保护。
+- Nano 连接上位机后的读取、写入、保存、重启回读，以及长时间日志采集。
+- Android 手机、USB 转接器和具体 Nano USB 芯片的串口兼容性；网页模拟设备仅用于软件交互检查。
 
-![PCB 3D 预览](hardware/previewPCB.png)
-
-在立创 EDA 编辑器中，可通过 **文件 > 打开 > 立创EDA...** 选择对应 JSON 文件导入，并保存到自己的工程中继续编辑或导出 Gerber。
-
-完整离线包也保留在 `PCB-EasyCanad.zip` 中方便分发。
-
-## 调试
-
-### 串口监视器
-
-烧录后打开串口监视器（115200 baud），约每 100ms 输出一行：
-
-```
-AOAraw=85.32, Zero=87.10, AOA=-1.78, RC=1502, Add=1.8, Cmd=-4.2, ServoUs=1463
-```
-
-各字段含义：
-
-| 字段 | 含义 | 单位 |
-|------|------|------|
-| `AOAraw` | 传感器原始角度（未减零位） | deg |
-| `Zero` | 当前零位校准值 | deg |
-| `AOA` | 滤波后的相对攻角 | deg |
-| `RC` | 俯仰通道原始脉宽 | μs |
-| `Add` | RC 映射的叠加角度 | deg |
-| `Cmd` | 鸭翼最终指令角度 | deg |
-| `ServoUs` | 输出到舵机的脉宽 | μs |
-
-### 常见调参
-
-在代码开头的参数配置区直接修改：
-
-| 参数 | 默认值 | 说明 |
-|------|--------|------|
-| `aoaFilterAlpha` | 0.15 | 滤波系数：越小越平滑但响应慢，0.05~0.3 |
-| `rcAuthorityDeg` | 90 | 遥控最大叠加角度，杆量 100% 时叠加多少度 |
-| `canardLimitDeg` | 90 | 鸭翼最大偏转角，防止机械干涉 |
-| `aoaMinDeg` / `aoaMaxDeg` | -180 / 180 | 传感器 0~5V 对应的角度范围 |
-
-## 标定流程
-
-1. 将飞行器放置在**实际飞行的零攻角姿态**（即巡航姿态）
-2. 按下标定按钮（D4 接 GND），串口输出 `CAL saved. zero(deg)= xx.xxx`
-3. 零位已写入 EEPROM，之后每次上电自动加载
-
-## 控制算法
-
-```
-舵机角度 = -1.2 × AOA(滤波) - RC遥控叠加
-
-输出脉宽 = map(角度, -90°, 90°, 500μs, 2500μs)
-```
-
-AOA 系数 `1.2` 为控制增益，使鸭翼对攻角变化有一定超前响应。可根据实际飞行手感调整。
-
-## 项目结构
-
-```
-EasyCanad/
-├── EasyCanad.ino              # 主程序
-├── BOM.md                     # 物料清单（含购买链接）
-├── PCB-EasyCanad.zip          # PCB 离线包（发布用）
-├── README.md                  # 本文件
-├── .gitignore
-├── hardware/
-│   ├── previewPCB.png         # PCB 3D 预览图
-│   ├── Schematic_EasyCanad.json
-│   ├── PCB_EasyCanad.json
-│   └── README.txt
-├── cad/
-│   ├── vane-blade.STEP        # AOA 传感器叶片 3D 模型
-│   └── vane-body.SLDPRT       # AOA 传感器主体 3D 模型
-└── archive/
-    ├── firmware-v1-no-calibration.ino    # 早期版本（无零位校准）
-    └── firmware-v2-with-calibration.ino  # 零位校准版本（历史备份）
-```
-
-> `archive/` 目录存放旧版固件代码，仅供历史参考。当前使用的固件为根目录下的 `EasyCanad.ino`。
-
-## 许可证
-
-MIT License
+完成台架检查前，不应把软件测试通过视为飞行验证通过。
