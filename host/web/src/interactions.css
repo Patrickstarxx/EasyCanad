@@ -1,0 +1,22 @@
+[hidden]{display:none!important}
+.workspace.busy #page-content{pointer-events:none;cursor:progress}
+.recording-chip{border-color:#efb8a3;background:#fff1ea;color:#a14b30;cursor:pointer}
+.validation-summary{margin:-4px 0 18px;padding:12px 16px;border:1px solid #e9c6bf;border-radius:10px;background:#fff6f3}
+.write-warning{margin:-4px 0 18px;padding:12px 16px;border:1px solid #d8998b;border-radius:10px;background:#fff2ed;color:#973f36;font-size:12px;line-height:1.6}
+.validation-summary:empty{display:none}
+.validation-summary strong{font-size:12px}
+.validation-link{display:block;width:100%;padding:5px 0;border:0;background:transparent;color:#a84743;text-align:left;font-size:12px;text-decoration:underline;cursor:pointer}
+.field-error{color:#a84743!important;font-size:11px!important;font-weight:600}
+.field-error:empty{display:none}
+.field input[aria-invalid="true"],.field select[aria-invalid="true"]{border-color:#c96c62;background:#fff8f6}
+.confirm-dialog{width:min(520px,calc(100vw - 28px));border:1px solid #dce8e4;border-radius:16px;padding:25px;color:#17303a;box-shadow:0 24px 70px #15343b38}
+.confirm-dialog::backdrop{background:#102c36a8}
+.confirm-dialog h2{font-size:21px;margin:0 0 12px}
+.confirm-dialog p{white-space:pre-line;line-height:1.7;font-size:13px;color:#4c6770;max-height:55vh;overflow:auto;margin:0 0 22px}
+.confirm-dialog .button-row{justify-content:flex-end}
+.undo-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;margin-bottom:12px;border:1px solid #bdebd4;border-radius:9px;background:#effaf4;color:#176348;font-size:12px}
+.file-button.is-disabled{cursor:not-allowed;opacity:.45}
+.timeline-control select{margin-left:4px;border:1px solid #d9e5e4;border-radius:7px;background:#fff;color:#23404a;padding:6px}
+.cursor-values{margin:8px 4px 2px;color:#536d74;font-size:12px;line-height:1.6}
+@media(max-width:860px){.config-aside{display:block;grid-row:1}.sticky-panel{position:static}.check-list{columns:2}}
+@media(max-width:640px){.recording-chip #recording-count{display:none}.top-actions{gap:4px}.config-aside{grid-row:1}.check-list{columns:1}.confirm-dialog{padding:19px}.timeline-control{flex-wrap:wrap}.timeline-control input{flex-basis:100%;order:3}}

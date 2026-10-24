@@ -1,0 +1,32 @@
+name: Host PWA checks
+
+on:
+  push:
+    branches: [main, 'codex/**']
+    paths: ['host/**', '.github/workflows/host.yml']
+  pull_request:
+    paths: ['host/**', '.github/workflows/host.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  host:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: host/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: host/web/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: easycanad-host-pwa
+          path: host/web/dist
