@@ -1,6 +1,6 @@
 # EasyCanad — 鸭翼飞行器 AOA 反馈控制器
 
-**固件 v5：** 支持机型参数窗口、带速度历史的模型、手动/辅助切换及日志回放，代码已模块化。双击 OpenModelConfig.cmd 编辑机型；接线与操作见 [FIRMWARE.md](FIRMWARE.md)，实现选择见 [DECISIONS.md](DECISIONS.md)。下文为原始固件参考。
+**当前固件 v6：** 支持独立配平、风标参考角和可调部分迎角补偿。接线、操作和控制律见 [FIRMWARE.md](FIRMWARE.md)；Windows / Android 网页上位机见 [host/README.md](host/README.md)。下文保留早期固件参考，当前参数与串口速率以固件说明为准。
 
 基于 Arduino 的鸭翼（canard）飞行器控制系统，支持 AOA 攻角传感器反馈、单路 PWM 遥控输入（俯仰/升降通道），以及 EEPROM 一键零位校准。
 
