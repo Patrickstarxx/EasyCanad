@@ -1,0 +1,11 @@
+{
+  "format": "easycanad-model",
+  "version": 1,
+  "name": "示例：请改成实机参数",
+  "mass_g": 800,
+  "static_thrust_g": 1000,
+  "wing_area_dm2": 20,
+  "drag": "medium",
+  "initial_speed_mps": 0,
+  "use_model_gain": false
+}
