@@ -1,6 +1,6 @@
-# EasyCanad 固件 v5：机型配置与有历史状态的速度模型
+# EasyCanad 固件 v6：独立配平、风标参考角与部分迎角补偿
 
-当前程序使用攻角与接收机 PWM 控制鸭翼，支持手动/辅助切换、地面配置锁定、独立方向反转、机型配置和速度模型。新机型默认固定增益，可选择记录模型预测或按模型调度；预测缺少姿态/速度观测，不用于失速判断。v3 有效攻角零位可继续使用；v1/v2 的旧零位仍需重新标定。
+当前程序使用攻角与接收机 PWM 控制鸭翼，支持手动/辅助切换、地面配置锁定、独立方向反转、机型配置和速度模型。v6 增加独立鸭翼配平、巡航风标参考角和 0～1 的部分迎角补偿。默认仍运行旧控制律；只有地面显式设置 `law_mode 1` 才启用新控制律。新控制律需先完成 [台架检查](BENCH_TEST_PLAN.md)。v3 有效攻角零位可继续使用；v1/v2 的旧零位仍需重新标定。
 
 ## 接线
 
@@ -51,7 +51,7 @@ D7 使用 AVR 引脚变化中断；D3 使用外部中断，均不阻塞等待脉
 
 模式通道达到 1700μs 并连续有效约 100ms 后，允许进入辅助；低于 1700μs，包括开关中间位置，选择手动。标定/进入 RUN 的手动判定更严格，要求不超过 1300μs。
 
-辅助权重约 300ms 渐入/渐出，最终舵令同时受变化速率限制。俯仰满杆时优先保留手动权限，自动补偿使用剩余的对称舵量预算：
+辅助权重约 300ms 渐入/渐出，最终舵令同时受变化速率限制。默认 `law_mode 0` 保留旧控制律，俯仰满杆时优先保留手动权限，自动补偿使用剩余的对称舵量预算：
 
 ```text
 manual = clamp(-normalizeRC × rc_dir × authority, ±limit)
@@ -59,6 +59,19 @@ automatic = clamp(-gain × throttleScale × assistBlend × aoa_dir × filteredAO
                   ±(limit - abs(manual)))
 target = clamp(manual + automatic, ±limit)
 ```
+
+`law_mode 1` 使用独立的机械配平和巡航风标参考角。`trim_deg` 是鸭翼前缘上偏为正的逻辑舵角，在手动和辅助模式均生效；`aoa_reference_deg` 是相对于已标定风标零位的巡航读数，不能用来代替传感器标定。正迎角偏差时，`aoa_dir=1` 的补偿为鸭翼前缘下偏。`compensation_ratio=0` 只保留配平，`1` 为同角度补偿，0～1 之间为部分补偿：
+
+```text
+manual = clamp(-normalizeRC × rc_dir × authority, ±limit)
+base = clamp(trim_deg + manual, ±limit)
+error = filteredAOA - aoa_reference_deg
+automatic = clamp(-compensation_ratio × assistBlend × aoa_dir × error,
+                  -limit - base, limit - base)
+target = base + automatic
+```
+
+新控制律按照配平和手动舵令之后实际剩余的正、负舵量分别限幅。它不使用旧 `gain`、油门代理或速度模型调度；启用前必须设 `throttle_schedule 0`。`RC_LOST`、地面配置和标定仍立即输出舵机中位；其他故障撤销自动补偿，保留配平和有效俯仰输入，最终舵令仍受速率限制。
 
 正负逻辑角度映射到舵机最小/最大端点前，再应用 `servo_dir`。将机械限幅从 90°减至 30°不会把这 30°重新放大成整个舵机行程。
 
@@ -129,7 +142,7 @@ a = (T - 0.5 × density × speed² × wingArea × Cd) / mass
 
 模型调度使用预测速度相对“同一模型推算的水平满油门平衡速度”的比例，在原有高低调度系数之间线性变化，仍受辅助权重、人工优先和舵面限幅约束；不使用全范围 1/V² 放大。没有对应机型参数时不能启用模式 2。
 
-旧模式 1 保留直接油门代理：按经过滤波的油门，在 throttle_idle 与 throttle_full 之间调度。模式 0 为固定增益。**新配置默认模式 0**；升级加载 v4 配置时保留原模式。有效 v3 攻角零位继续沿用。
+旧模式 1 保留直接油门代理：按经过滤波的油门，在 throttle_idle 与 throttle_full 之间调度。模式 0 为固定增益。**新配置默认 `law_mode 0` 和 `throttle_schedule 0`**；升级加载 v4/v5 配置时保留原控制参数和旧控制律。有效 v3 攻角零位继续沿用。机型参数窗口只管理旧控制律的速度模型；新控制律的参数请用地面串口命令设置。
 
 ## 配置命令
 
@@ -138,6 +151,10 @@ a = (T - 0.5 × density × speed² × wingArea × Cd) / mass
 | 命令 | 含义与范围 |
 |---|---|
 | `set gain 1.2` | 基础攻角增益，0～5 |
+| `set trim_deg 5` | 新控制律鸭翼机械配平角，范围为 ±`limit`；手动和辅助均生效 |
+| `set aoa_reference_deg 3` | 新控制律巡航风标参考读数，相对于已标定零位，±90° |
+| `set compensation_ratio 0.5` | 新控制律迎角偏差补偿比例，0～1 |
+| `set law_mode 1` | 0 旧控制律，1 配平加部分补偿；须先设置 `throttle_schedule 0` |
 | `set authority 90` | 遥控满杆权限，0～90° |
 | `set limit 30` | 实际机械限幅，(0, 90]° |
 | `set servo_dir -1` | 反转整个舵机输出；仅允许 ±1 |
@@ -194,9 +211,9 @@ python tools/flight_log.py replay logs/flight.ecsv --gain 0.8 --output logs/gain
 
 日志拥塞时丢帧并累计计数，控制循环继续运行。下一条可发送的数据前会附上完整算法状态快照，回放在此重同步；缺失区间本身无法恢复。若文件丢失了帧且没有对应快照，回放报错而不会把结果当作完整验证。修改增益后的对比也会在快照处恢复记录时的动态状态，跨缺失区间不能视为连续仿真。
 
-### 原始记录格式 v5（工具兼容 v4）
+### 原始记录格式 v6（工具兼容 v4/v5）
 
-- `C,5,configHex,zeroHex`：小端二进制十六进制配置和攻角零位，避免浮点文本丢失精度。配置布局为 `<8f3H3bB4fB`（59 字节）。
+- `C,6,configHex,zeroHex`：小端二进制十六进制配置和攻角零位，避免浮点文本丢失精度。配置布局为 `<8f3H3bB4fB3fB`（72 字节）；末尾依次为配平、巡航风标参考、补偿比例、控制律模式。v4/v5 日志仍可读取和回放。
 - `R,memoryHex`：下一帧计算之前的控制器状态，布局 `<5fI3BfIB`（36 字节）。
 - `E,event,cal_status`：命令事件。
 - `D,...`：每个 5ms 控制周期尝试记录一次，字段如下：
@@ -207,7 +224,7 @@ servo_us,gain_milli,blend_milli,gain_source,drop,miss,cal_status,max_interval_us
 model_speed_cmps,model_status,model_age_ms
 ```
 
-上述字段在实际文件中为单行。角度单位 0.01°；增益和权重单位 0.001。增益来源：0 无补偿、1 固定、2 油门代理、3 无观测速度模型。model_speed_cmps 单位为 cm/s；model_status：0 等待、1 预测中（未观测校正）、2 输入中断；model_age_ms 为累计积分时间，按毫秒取整。
+上述字段在实际文件中为单行。角度单位 0.01°；增益和权重单位 0.001。新控制律下 `gain_milli` 表示实际补偿比例乘以辅助权重。增益来源：0 无补偿、1 固定、2 油门代理、3 无观测速度模型、4 部分迎角补偿。model_speed_cmps 单位为 cm/s；model_status：0 等待、1 预测中（未观测校正）、2 输入中断；model_age_ms 为累计积分时间，按毫秒取整。回放 CSV 还计算输出手动角、自动角、目标角和滤波后的风标角，便于分析。
 
 flags 位：1 俯仰有效、2 模式有效、4 油门有效、8 攻角零位有效、16 地面配置、32 标定中。原始 PWM 可能保留最后一次值，是否有效以 flags 为准。
 
@@ -224,7 +241,7 @@ flags 位：1 俯仰有效、2 模式有效、4 油门有效、8 攻角零位有
 | PwmInput.h | 三路中断捕获和超时 |
 | EepromStorage.h | CRC 与提交写入 |
 | CalibrationStore.h | 按钮及攻角零位标定 |
-| ConfigStore.h | 双槽配置、v4 升级兼容 |
+| ConfigStore.h | 双槽配置、v4/v5 升级兼容 |
 | SerialConsole.h | 地面配置命令 |
 | FlightLogger.h | 配置/状态快照与控制帧发送 |
 | tools/model_profiles.py | 机型参数窗口、JSON 和地面写入 |

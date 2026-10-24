@@ -142,6 +142,55 @@ void testManualPriority() {
     CHECK(near(out.automaticDeg, 0));
   }
 }
+void testTrimCompensation() {
+  auto c = defaultConfig(); c.lawMode = 1; c.limitDeg = 20;
+  c.trimDeg = 5; c.compensationRatio = 0.5f;
+  c.aoaReferenceDeg = rawToDeg(540) - rawToDeg(512);
+  CHECK(validConfig(c));
+  ControllerMemory m = {}; auto in = coreInput(540);
+  ControlOutput out = {};
+  for (int i = 0; i < 120; ++i) out = controlStep(c, m, in);
+  CHECK(out.state == ACTIVE && near(out.targetDeg, 5) && near(out.automaticDeg, 0));
+  in.aoaAdc = 550;
+  for (int i = 0; i < 120; ++i) out = controlStep(c, m, in);
+  CHECK(near(out.effectiveGain, 0.5f));
+  CHECK(near(out.automaticDeg, -0.5f * (m.aoaFilt - c.aoaReferenceDeg), 0.01f));
+  CHECK(near(out.commandDeg, out.targetDeg, 0.01f));
+  c.compensationRatio = 0; resetController(m);
+  for (int i = 0; i < 120; ++i) out = controlStep(c, m, in);
+  CHECK(out.state == ACTIVE && near(out.targetDeg, c.trimDeg) && out.automaticDeg == 0);
+  c.compensationRatio = 1; resetController(m);
+  for (int i = 0; i < 120; ++i) out = controlStep(c, m, in);
+  CHECK(near(out.automaticDeg, -(m.aoaFilt - c.aoaReferenceDeg), 0.01f));
+  in.modeUs = 1000;
+  for (int i = 0; i < 80; ++i) out = controlStep(c, m, in);
+  CHECK(out.state == MANUAL && near(out.targetDeg, c.trimDeg));
+  in.flags &= ~MODE_VALID;
+  out = controlStep(c, m, in);
+  CHECK(out.state == MODE_LOST && near(out.targetDeg, c.trimDeg) && out.automaticDeg == 0);
+  in.flags |= MODE_VALID; in.modeUs = 2000; in.aoaAdc = 0;
+  for (int i = 0; i < 25; ++i) out = controlStep(c, m, in);
+  CHECK(out.state == SENSOR_FAULT && near(out.targetDeg, c.trimDeg));
+  in.flags &= ~RC_VALID;
+  out = controlStep(c, m, in);
+  CHECK(out.state == RC_LOST && out.servoUs == c.servoMidUs);
+}
+void testTrimLimits() {
+  auto c = defaultConfig(); c.lawMode = 1; c.limitDeg = 20;
+  c.trimDeg = 10; c.compensationRatio = 1;
+  ControllerMemory m = {}; auto in = coreInput(600);
+  in.rcUs = 2000;
+  ControlOutput out = {};
+  for (int i = 0; i < 120; ++i) out = controlStep(c, m, in);
+  CHECK(near(out.manualDeg, -20) && near(out.automaticDeg, -10) && near(out.targetDeg, -20));
+  resetController(m); in.rcUs = 1000; in.aoaAdc = 400;
+  for (int i = 0; i < 120; ++i) out = controlStep(c, m, in);
+  CHECK(near(out.manualDeg, 20) && near(out.automaticDeg, 0) && near(out.targetDeg, 20));
+  c.trimDeg = 21; CHECK(!validConfig(c));
+  c.trimDeg = 10; c.compensationRatio = 1.01f; CHECK(!validConfig(c));
+  c.compensationRatio = 0.5f; c.throttleSchedule = 1; CHECK(!validConfig(c));
+  c.throttleSchedule = 0; c.lawMode = 2; CHECK(!validConfig(c));
+}
 void testSensor() {
   auto c = defaultConfig(); ControllerMemory m = {}; auto in = coreInput();
   ControlOutput out = {};
@@ -252,6 +301,12 @@ void testParameters() {
   CHECK(setParameter("limit", 30) && near(config.limitDeg, 30));
   CHECK(setParameter("rc_dir", -1) && setParameter("aoa_dir", -1));
   CHECK(setParameter("throttle_schedule", 0));
+  CHECK(setParameter("trim_deg", 4) && near(config.trimDeg, 4));
+  CHECK(setParameter("aoa_reference_deg", 3) && near(config.aoaReferenceDeg, 3));
+  CHECK(setParameter("compensation_ratio", 0.5f) && near(config.compensationRatio, 0.5f));
+  CHECK(setParameter("law_mode", 1) && config.lawMode == 1);
+  CHECK(!setParameter("throttle_schedule", 1) && !setParameter("law_mode", 2));
+  CHECK(!setParameter("compensation_ratio", 1.1f) && !setParameter("trim_deg", 31));
   CHECK(!setParameter("servo_dir", 0) && !setParameter("servo_dir", 1.5f));
   CHECK(!setParameter("limit", 100) && !setParameter("gain", NAN));
   CHECK(!setParameter("throttle_schedule", 0.5f));
@@ -277,12 +332,21 @@ void testConfigPersistence() {
   old.crc = crc16(reinterpret_cast<const uint8_t *>(&old), offsetof(LegacyConfigRecord, crc));
   EEPROM.put(CONFIG_SLOTS[0], old); loadConfig();
   CHECK(near(config.gain, 0.7f) && config.servoDirection == -1 && config.speedModel.massGrams == 0);
+  CHECK(config.lawMode == 0 && config.compensationRatio == 0 && config.trimDeg == 0);
+  EEPROM.data.fill(0xFF);
+  LegacyV5ConfigRecord v5 = {CONFIG_MAGIC, 5, 8, {}, 0};
+  legacyConfig = defaultConfig(); legacyConfig.gain = 0.8f; legacyConfig.speedModel.massGrams = 850;
+  memcpy(v5.configBytes, &legacyConfig, sizeof(v5.configBytes));
+  v5.crc = crc16(reinterpret_cast<const uint8_t *>(&v5), offsetof(LegacyV5ConfigRecord, crc));
+  EEPROM.put(CONFIG_SLOTS[1], v5); loadConfig();
+  CHECK(near(config.gain, 0.8f) && near(config.speedModel.massGrams, 850));
+  CHECK(config.lawMode == 0 && config.compensationRatio == 0 && config.trimDeg == 0);
 }
 void testConfigPowerLoss() {
   fakeGroundLevel = LOW; setup(); CHECK(setParameter("gain", 0.9f)); CHECK(saveConfig());
   const auto baseline = EEPROM.data;
   const int8_t slot = activeConfigSlot; const uint32_t seq = configSequence;
-  for (int cut = 0; cut <= 70; ++cut) {
+  for (int cut = 0; cut <= (int)sizeof(ConfigRecord) + 2; ++cut) {
     EEPROM.data = baseline; activeConfigSlot = slot; configSequence = seq;
     config.gain = 0.7f; EEPROM.changedWrites = 0; EEPROM.failAfter = cut;
     try { saveConfig(); } catch (const std::runtime_error &) {}
@@ -290,6 +354,18 @@ void testConfigPowerLoss() {
     CHECK(near(config.gain, 0.9f) || near(config.gain, 0.7f));
     CHECK(activeConfigSlot >= 0); // Last committed configuration always survives.
   }
+}
+void testCompensationPersistence() {
+  fakeGroundLevel = LOW; setup();
+  CHECK(setParameter("limit", 30));
+  CHECK(setParameter("trim_deg", 5));
+  CHECK(setParameter("aoa_reference_deg", 3));
+  CHECK(setParameter("compensation_ratio", 0.5f));
+  CHECK(setParameter("law_mode", 1));
+  CHECK(saveConfig());
+  config = defaultConfig(); loadConfig();
+  CHECK(config.lawMode == 1 && near(config.trimDeg, 5) &&
+        near(config.aoaReferenceDeg, 3) && near(config.compensationRatio, 0.5f));
 }
 void testCalibrationSeam() {
   fakeGroundLevel = LOW; setup();
@@ -334,7 +410,7 @@ void testTelemetry() {
   CHECK(controller.commandDeg < 0 && logDropped > before);
   Serial.room = 7; Serial.largestWrite = 0; drain(); tick();
   CHECK(Serial.largestWrite <= 7);
-  CHECK(Serial.output.find("C,5,") != std::string::npos && Serial.output.find("R,") != std::string::npos);
+  CHECK(Serial.output.find("C,6,") != std::string::npos && Serial.output.find("R,") != std::string::npos);
 }
 void testSpeedHistory() {
   auto c = defaultConfig(); c.speedModel = {800, 1000, 20, 5, 2}; c.throttleSchedule = 2;
@@ -370,6 +446,16 @@ void emitLog(const char *path) {
   fakeAnalog = 0; for (int i = 0; i < 10; ++i) tick();
   std::ofstream file(path); file << Serial.output;
 }
+void emitCompensationLog(const char *path) {
+  setup(); config.lawMode = 1; config.trimDeg = 5;
+  config.aoaReferenceDeg = 3; config.compensationRatio = 0.5f;
+  saveCalibration(rawToDeg(fakeAnalog));
+  for (int i = 0; i < 120; ++i) tick(1500, 2000);
+  fakeAnalog = 540;
+  for (int i = 0; i < 120; ++i) tick(i < 60 ? 1500 : 1800, 2000);
+  for (int i = 0; i < 80; ++i) tick(1500, 1000);
+  std::ofstream file(path); file << Serial.output;
+}
 int main(int argc, char **argv) {
   if (argc < 2) return 2;
   const std::string n = argv[1];
@@ -384,6 +470,8 @@ int main(int argc, char **argv) {
     else if (n == "rc-loss-output") testLossOutput();
     else if (n == "mapping") testMapping();
     else if (n == "manual-priority") testManualPriority();
+    else if (n == "trim-compensation") testTrimCompensation();
+    else if (n == "trim-limits") testTrimLimits();
     else if (n == "sensor") testSensor();
     else if (n == "manual-fallback") testFallback();
     else if (n == "direction-rate") testRate();
@@ -396,6 +484,7 @@ int main(int argc, char **argv) {
     else if (n == "parameters") testParameters();
     else if (n == "config-persistence") testConfigPersistence();
     else if (n == "config-power-loss") testConfigPowerLoss();
+    else if (n == "compensation-persistence") testCompensationPersistence();
     else if (n == "calibration-seam") testCalibrationSeam();
     else if (n == "calibration-reject") testCalibrationReject();
     else if (n == "calibration-integration") testCalibrationIntegration();
@@ -403,6 +492,7 @@ int main(int argc, char **argv) {
     else if (n == "telemetry") testTelemetry();
     else if (n == "speed-history") testSpeedHistory();
     else if (n == "emit-log" && argc == 3) emitLog(argv[2]);
+    else if (n == "emit-compensation-log" && argc == 3) emitCompensationLog(argv[2]);
     else return 2;
     std::cout << "PASS " << n << '\n'; return 0;
   } catch (const std::exception &e) { std::cerr << "FAIL " << n << ": " << e.what() << '\n'; return 1; }

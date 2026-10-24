@@ -21,6 +21,10 @@ struct __attribute__((packed)) ControlConfig {
   int8_t aoaDirection;
   uint8_t throttleSchedule;
   SpeedModelConfig speedModel;
+  float trimDeg;
+  float aoaReferenceDeg;
+  float compensationRatio;
+  uint8_t lawMode;
 };
 
 enum ControlState : uint8_t {
@@ -59,10 +63,11 @@ struct ControlOutput {
   float manualDeg;
   float automaticDeg;
   float effectiveGain;
+  float targetDeg;
   uint16_t servoUs;
 };
 
-static_assert(sizeof(float) == 4 && sizeof(ControlConfig) == 59 && sizeof(ControllerMemory) == 36,
+static_assert(sizeof(float) == 4 && sizeof(ControlConfig) == 72 && sizeof(ControllerMemory) == 36,
               "Log format requires packed 32-bit floats");
 
 inline float clampf(float x, float lo, float hi) { return x < lo ? lo : (x > hi ? hi : x); }
@@ -81,7 +86,7 @@ inline float normalizeRc(uint16_t width) {
 inline ControlConfig defaultConfig() {
   // 默认固定增益。填写机型参数后，模式 2 可按有历史状态的速度模型调度。
   ControlConfig c = {1.2f, 90, 90, 28333.333f, 360, 1, 0.5f, 500000,
-                     500, 1500, 2500, 1, 1, 1, 0, {0, 0, 0, 0, 2}};
+                     500, 1500, 2500, 1, 1, 1, 0, {0, 0, 0, 0, 2}, 0, 0, 0, 0};
   return c;
 }
 inline bool validConfig(const ControlConfig &c) {
@@ -100,7 +105,11 @@ inline bool validConfig(const ControlConfig &c) {
     (c.servoDirection == 1 || c.servoDirection == -1) &&
     (c.rcDirection == 1 || c.rcDirection == -1) &&
     (c.aoaDirection == 1 || c.aoaDirection == -1) && c.throttleSchedule <= 2 && validSpeedFields(c.speedModel) &&
-    (c.throttleSchedule != 2 || validSpeedParameters(c.speedModel));
+    (c.throttleSchedule != 2 || validSpeedParameters(c.speedModel)) &&
+    isfinite(c.trimDeg) && fabsf(c.trimDeg) <= c.limitDeg &&
+    isfinite(c.aoaReferenceDeg) && fabsf(c.aoaReferenceDeg) <= 90 &&
+    isfinite(c.compensationRatio) && c.compensationRatio >= 0 && c.compensationRatio <= 1 &&
+    c.lawMode <= 1 && (c.lawMode == 0 || c.throttleSchedule == 0);
 }
 inline void resetController(ControllerMemory &m) { m = ControllerMemory{}; }
 inline int degToServoUs(const ControlConfig &c, float deg) {
@@ -109,7 +118,7 @@ inline int degToServoUs(const ControlConfig &c, float deg) {
   return (int)(c.servoMidUs + deg * span / 90.0f + 0.5f);
 }
 inline ControlOutput controlStep(const ControlConfig &c, ControllerMemory &m, const ControlInput &in) {
-  ControlOutput out = {MANUAL, 0, 0, 0, 0, c.servoMidUs};
+  ControlOutput out = {MANUAL, 0, 0, 0, 0, 0, c.servoMidUs};
   if (in.flags & (GROUND | CAL_BUSY_FLAG)) {
     out.state = in.flags & CAL_BUSY_FLAG ? CALIBRATING : GROUND_CONFIG;
     resetController(m);
@@ -173,16 +182,25 @@ inline ControlOutput controlStep(const ControlConfig &c, ControllerMemory &m, co
   const bool fading = out.state == MANUAL && (in.flags & CAL_VALID) && m.sensorGoodSamples >= 10 &&
     (!c.throttleSchedule || (in.flags & THROTTLE_VALID)) &&
     (c.throttleSchedule != 2 || m.speed.status == SPEED_PREDICTING);
+  const float base = clampf(out.manualDeg + (c.lawMode == 1 ? c.trimDeg : 0), -c.limitDeg, c.limitDeg);
   if (assistAllowed || fading) {
-    const float position = c.throttleSchedule == 2 ?
-      clampf(m.speed.speedMps / modelReferenceSpeed(c.speedModel), 0, 1) : m.throttleNorm;
-    const float scale = c.throttleSchedule ?
-      c.throttleIdleScale + (c.throttleFullScale - c.throttleIdleScale) * position : 1;
-    out.effectiveGain = c.gain * scale * m.assistBlend;
-    const float remaining = c.limitDeg - fabsf(out.manualDeg);
-    out.automaticDeg = clampf(-out.effectiveGain * c.aoaDirection * m.aoaFilt, -remaining, remaining);
+    if (c.lawMode == 1) {
+      out.effectiveGain = c.compensationRatio * m.assistBlend;
+      const float error = m.aoaFilt - c.aoaReferenceDeg;
+      out.automaticDeg = clampf(-out.effectiveGain * c.aoaDirection * error,
+                                -c.limitDeg - base, c.limitDeg - base);
+    } else {
+      const float position = c.throttleSchedule == 2 ?
+        clampf(m.speed.speedMps / modelReferenceSpeed(c.speedModel), 0, 1) : m.throttleNorm;
+      const float scale = c.throttleSchedule ?
+        c.throttleIdleScale + (c.throttleFullScale - c.throttleIdleScale) * position : 1;
+      out.effectiveGain = c.gain * scale * m.assistBlend;
+      const float remaining = c.limitDeg - fabsf(out.manualDeg);
+      out.automaticDeg = clampf(-out.effectiveGain * c.aoaDirection * m.aoaFilt, -remaining, remaining);
+    }
   }
-  const float target = clampf(out.manualDeg + out.automaticDeg, -c.limitDeg, c.limitDeg);
+  const float target = clampf(base + out.automaticDeg, -c.limitDeg, c.limitDeg);
+  out.targetDeg = target;
   const float step = c.slewDegSec * boundedDt / 1000000.0f;
   m.commandDeg = clampf(target, m.commandDeg - step, m.commandDeg + step);
   out.commandDeg = m.commandDeg;

@@ -11,6 +11,15 @@ bool readConfigSlot(uint8_t slot, ConfigRecord &record) {
     record.sequence = old.sequence;
     return validConfig(record.config);
   }
+  if (record.magic == CONFIG_MAGIC && record.version == 5) {
+    LegacyV5ConfigRecord old;
+    EEPROM.get(CONFIG_SLOTS[slot], old);
+    if (old.crc != crc16(reinterpret_cast<const uint8_t *>(&old), offsetof(LegacyV5ConfigRecord, crc))) return false;
+    record.config = defaultConfig();
+    memcpy(&record.config, old.configBytes, sizeof(old.configBytes));
+    record.sequence = old.sequence;
+    return validConfig(record.config);
+  }
   return record.magic == CONFIG_MAGIC && record.version == CONFIG_VERSION &&
     record.crc == crc16(reinterpret_cast<const uint8_t *>(&record), offsetof(ConfigRecord, crc)) &&
     validConfig(record.config);

@@ -45,12 +45,19 @@ struct __attribute__((packed)) ConfigRecord {
   uint16_t crc;
 };
 const uint32_t CONFIG_MAGIC = 0x45434634UL;
-const uint16_t CONFIG_VERSION = 5;
+const uint16_t CONFIG_VERSION = 6;
 struct __attribute__((packed)) LegacyConfigRecord {
   uint32_t magic;
   uint16_t version;
   uint32_t sequence;
   uint8_t configBytes[42];
+  uint16_t crc;
+};
+struct __attribute__((packed)) LegacyV5ConfigRecord {
+  uint32_t magic;
+  uint16_t version;
+  uint32_t sequence;
+  uint8_t configBytes[59];
   uint16_t crc;
 };
 const int CONFIG_SLOTS[2] = {64, 192};

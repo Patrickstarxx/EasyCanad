@@ -17,16 +17,18 @@ CONFIG_FIELDS = (
     "rc_direction", "aoa_direction", "throttle_schedule",
 )
 MODEL_FIELDS = ("model_mass_g", "model_thrust_g", "model_area_dm2", "model_initial_mps", "model_drag")
+COMPENSATION_FIELDS = ("trim_deg", "aoa_reference_deg", "compensation_ratio", "law_mode")
 
 
 def read_configuration(line):
     fields = line.strip().split(",")
-    if len(fields) != 4 or fields[0] != "C" or fields[1] not in ("4", "5"):
+    if len(fields) != 4 or fields[0] != "C" or fields[1] not in ("4", "5", "6"):
         raise ValueError("not a supported configuration record")
     version = int(fields[1])
-    layout = "<8f3H3bB" if version == 4 else "<8f3H3bB4fB"
+    layout = "<8f3H3bB" if version == 4 else "<8f3H3bB4fB" + ("3fB" if version == 6 else "")
     values = struct.unpack(layout, bytes.fromhex(fields[2]))
-    result = dict(zip(CONFIG_FIELDS + (MODEL_FIELDS if version == 5 else ()), values))
+    result = dict(zip(CONFIG_FIELDS + (MODEL_FIELDS if version >= 5 else ()) +
+                      (COMPENSATION_FIELDS if version == 6 else ()), values))
     result["log_version"] = version
     result["zero_deg"] = struct.unpack("<f", bytes.fromhex(fields[3]))[0]
     return result
@@ -58,7 +60,7 @@ def capture(args):
                         continue
                     line = raw.decode("ascii", errors="replace").rstrip("\r\n")
                     if not have_config:
-                        if not line.startswith(("C,4,", "C,5,")):
+                        if not line.startswith(("C,4,", "C,5,", "C,6,")):
                             continue
                         read_configuration(line)
                         have_config = True

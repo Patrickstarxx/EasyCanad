@@ -9,9 +9,10 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 CASES = (
     "startup", "legacy", "record", "power-loss", "rc-capture", "rc-rollover", "aux-capture",
-    "rc-loss-output", "mapping", "manual-priority", "sensor", "manual-fallback", "direction-rate",
+    "rc-loss-output", "mapping", "manual-priority", "trim-compensation", "trim-limits",
+    "sensor", "manual-fallback", "direction-rate",
     "mode", "mode-loss", "throttle", "directions", "ground-lock", "ground-run", "parameters",
-    "config-persistence", "config-power-loss", "calibration-seam", "calibration-reject",
+    "config-persistence", "config-power-loss", "compensation-persistence", "calibration-seam", "calibration-reject",
     "calibration-integration", "button", "telemetry", "speed-history",
 )
 
@@ -56,6 +57,14 @@ def main():
             assert "mismatches=0" in result.stderr
             assert "model_unobserved" in result.stdout
             print(f"PASS actual firmware log replay: {result.stderr.strip()}", flush=True)
+            legacy_v5 = work / f"{variant}-v5.csv"
+            legacy_v5.write_text("\n".join(
+                "C,5," + line.split(",")[2][:118] + "," + line.split(",")[3]
+                if line.startswith("C,6,") else line
+                for line in log.read_text(encoding="utf-8").splitlines()) + "\n", encoding="utf-8")
+            old_result = subprocess.run([str(replay), str(legacy_v5)],
+                check=True, capture_output=True, text=True)
+            assert "mismatches=0" in old_result.stderr
             override = subprocess.run([str(replay), str(log), "--gain", "0.8"],
                 check=True, capture_output=True, text=True)
             assert "comparison=off" in override.stderr and "changed" in override.stdout
@@ -76,6 +85,13 @@ def main():
             bad.write_text("\n".join(lines[:removed] + lines[removed + 1:]) + "\n", encoding="utf-8")
             assert subprocess.run([str(replay), str(bad)], capture_output=True).returncode == 2
             print("PASS replay overrides, tamper detection and missing-frame rejection", flush=True)
+            compensation_log = work / f"{variant}-compensation.csv"
+            subprocess.run([str(executable), "emit-compensation-log", str(compensation_log)], check=True)
+            compensation_replay = subprocess.run([str(replay), str(compensation_log)],
+                check=True, capture_output=True, text=True)
+            assert "mismatches=0" in compensation_replay.stderr
+            assert "partial_compensation" in compensation_replay.stdout
+            print("PASS trim/reference/partial-compensation log replay", flush=True)
             if variant == "default":
                 subprocess.run([sys.executable, str(ROOT / "tools/flight_log.py"), "inspect", str(log)],
                                check=True, capture_output=True)

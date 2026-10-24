@@ -24,6 +24,13 @@ bool setParameter(const char *key, float value) {
   else if (KEY_IS("model_thrust_g")) next.speedModel.staticThrustGrams = value;
   else if (KEY_IS("model_area_dm2")) next.speedModel.wingAreaDm2 = value;
   else if (KEY_IS("model_initial_mps")) next.speedModel.initialSpeedMps = value;
+  else if (KEY_IS("trim_deg")) next.trimDeg = value;
+  else if (KEY_IS("aoa_reference_deg")) next.aoaReferenceDeg = value;
+  else if (KEY_IS("compensation_ratio")) next.compensationRatio = value;
+  else if (KEY_IS("law_mode")) {
+    if (value != 0 && value != 1) return false;
+    next.lawMode = (uint8_t)value;
+  }
   else if (KEY_IS("model_drag")) {
     if (value != 1 && value != 2 && value != 3) return false;
     next.speedModel.dragPreset = (uint8_t)value;

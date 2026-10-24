@@ -52,6 +52,17 @@ class CaptureTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             flight_log.read_configuration("C,3,00,00")
 
+    def test_v6_configuration_decoder(self):
+        v5 = struct.pack("<8f3H3bB4fB", 1.2, 90, 30, 28333.333, 360, 1, 0.5, 500000,
+                         700, 1400, 2300, 1, 1, 1, 0, 800, 1000, 20, 5, 2)
+        v6 = v5 + struct.pack("<3fB", 5, 3, 0.5, 1)
+        config = flight_log.read_configuration(f"C,6,{v6.hex()},{struct.pack('<f', 0).hex()}")
+        self.assertEqual(config["log_version"], 6)
+        self.assertEqual(config["trim_deg"], 5)
+        self.assertEqual(config["aoa_reference_deg"], 3)
+        self.assertEqual(config["compensation_ratio"], 0.5)
+        self.assertEqual(config["law_mode"], 1)
+
     def test_capture_waits_for_new_metadata(self):
         connection = FakeConnection()
         serial_module = types.SimpleNamespace(Serial=lambda *args, **kwargs: connection)

@@ -20,7 +20,7 @@ void queueLog(const ControlInput &input, const ControllerMemory &before, const C
   ++logSequence;
   if (telemetrySent < telemetryLength) { if (loggingEnabled) ++logDropped; logResync = true; return; }
   if (metadataPending) {
-    memcpy(telemetry, "C,5,", 4);
+    memcpy(telemetry, "C,6,", 4);
     size_t n = appendHex(4, &config, sizeof(config));
     telemetry[n++] = ',';
     n = appendHex(n, &sensorZeroDeg, sizeof(sensorZeroDeg));
@@ -48,7 +48,8 @@ void queueLog(const ControlInput &input, const ControllerMemory &before, const C
     (unsigned)input.throttleUs, (unsigned)input.flags, (unsigned)output.state,
     (int)(output.commandDeg * 100), (unsigned)output.servoUs,
     (unsigned)(output.effectiveGain * 1000), (unsigned)(controller.assistBlend * 1000),
-    (unsigned)(output.effectiveGain > 0 ? (config.throttleSchedule == 2 ? 3 : (config.throttleSchedule ? 2 : 1)) : 0),
+    (unsigned)(output.effectiveGain > 0 ? (config.lawMode == 1 ? 4 :
+      (config.throttleSchedule == 2 ? 3 : (config.throttleSchedule ? 2 : 1))) : 0),
     (unsigned long)logDropped, (unsigned long)missedControlPeriods, (unsigned)calibrationStatus,
     (unsigned long)maxControlIntervalUs, (unsigned long)(controller.speed.speedMps * 100),
     (unsigned)controller.speed.status, (unsigned long)controller.speed.ageMs);

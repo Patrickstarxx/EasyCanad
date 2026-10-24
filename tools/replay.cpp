@@ -77,11 +77,11 @@ int main(int argc, char **argv) {
     ControllerMemory memory = {};
     float zero = 0;
     bool haveConfig = false, haveMemory = false, freshSnapshot = false, haveData = false;
-    unsigned logVersion = 5;
+    unsigned logVersion = 6;
     uint32_t previousSequence = 0;
     unsigned long frames = 0, snapshots = 0, mismatches = 0, missing = 0;
     const bool comparing = !overrideGain && !overrideDirection;
-    std::cout << "seq,t_us,dt_us,aoa_adc,rc_us,mode_us,throttle_us,flags,state,cmd_deg,servo_us,effective_gain,assist_blend,gain_source,log_drop,miss,cal_status,max_interval_us,model_speed_mps,model_status,model_age_ms,match\n";
+    std::cout << "seq,t_us,dt_us,aoa_adc,rc_us,mode_us,throttle_us,flags,state,cmd_deg,servo_us,effective_gain,assist_blend,gain_source,log_drop,miss,cal_status,max_interval_us,model_speed_mps,model_status,model_age_ms,manual_deg,automatic_deg,target_deg,filtered_aoa_deg,match\n";
     std::string line;
     while (std::getline(file, line)) {
       ++lineNumber;
@@ -90,10 +90,11 @@ int main(int argc, char **argv) {
       const auto v = split(line);
       if (v[0] == "E") continue;
       if (v[0] == "C") {
-        if (v.size() != 4 || (v[1] != "4" && v[1] != "5")) throw std::runtime_error("unsupported configuration record");
+        if (v.size() != 4 || (v[1] != "4" && v[1] != "5" && v[1] != "6")) throw std::runtime_error("unsupported configuration record");
         logVersion = number(v[1]);
         config = defaultConfig();
-        decodeHex(v[2], &config, logVersion == 4 ? 42 : sizeof(config)); decodeHex(v[3], &zero, sizeof(zero));
+        decodeHex(v[2], &config, logVersion == 4 ? 42 : (logVersion == 5 ? 59 : sizeof(config)));
+        decodeHex(v[3], &zero, sizeof(zero));
         if (!validConfig(config) || !std::isfinite(zero) || zero < -180 || zero >= 180)
           throw std::runtime_error("invalid configuration or calibration zero");
         if (overrideGain) config.gain = gain;
@@ -121,30 +122,33 @@ int main(int argc, char **argv) {
         const int expectedCommand = signedNumber(v[10]);
         const unsigned expectedServo = number(v[11], 2500);
         const unsigned expectedGain = number(v[12], 5000), expectedBlend = number(v[13], 1000);
-        const unsigned expectedSource = number(v[14], 3);
+        const unsigned expectedSource = number(v[14], logVersion == 6 ? 4 : 3);
         const uint32_t drops = number(v[15]), misses = number(v[16]);
         const unsigned calStatus = number(v[17], 3);
         const uint32_t maxInterval = number(v[18]);
-        const float expectedSpeed = logVersion == 5 ? number(v[19]) / 100.0f : 0;
-        const unsigned expectedModelStatus = logVersion == 5 ? number(v[20], SPEED_INTERRUPTED) : 0;
-        const uint32_t expectedAge = logVersion == 5 ? number(v[21]) : 0;
+        const float expectedSpeed = logVersion >= 5 ? number(v[19]) / 100.0f : 0;
+        const unsigned expectedModelStatus = logVersion >= 5 ? number(v[20], SPEED_INTERRUPTED) : 0;
+        const uint32_t expectedAge = logVersion >= 5 ? number(v[21]) : 0;
         // AVR 与主机浮点舍入允许 1us / 0.02deg 偏差；状态必须一致。
         const bool match = result.state == expectedState &&
           std::abs(static_cast<int>(result.servoUs) - static_cast<int>(expectedServo)) <= 1 &&
           std::fabs(result.commandDeg * 100 - expectedCommand) <= 2 &&
           std::fabs(result.effectiveGain * 1000 - expectedGain) <= 2 &&
           std::fabs(memory.assistBlend * 1000 - expectedBlend) <= 2 &&
-          expectedSource == (result.effectiveGain > 0 ? (config.throttleSchedule == 2 ? 3U : (config.throttleSchedule ? 2U : 1U)) : 0U) &&
+          expectedSource == (result.effectiveGain > 0 ? (config.lawMode == 1 ? 4U :
+            (config.throttleSchedule == 2 ? 3U : (config.throttleSchedule ? 2U : 1U))) : 0U) &&
           std::fabs(memory.speed.speedMps - expectedSpeed) <= 0.03f &&
           memory.speed.status == expectedModelStatus && memory.speed.ageMs == expectedAge;
         if (comparing && !match) ++mismatches;
-        const char *source = result.effectiveGain > 0 ? (config.throttleSchedule == 2 ? "model_unobserved" : (config.throttleSchedule ? "throttle_proxy" : "fixed")) : "none";
+        const char *source = result.effectiveGain > 0 ? (config.lawMode == 1 ? "partial_compensation" :
+          (config.throttleSchedule == 2 ? "model_unobserved" : (config.throttleSchedule ? "throttle_proxy" : "fixed"))) : "none";
         std::cout << seq << ',' << input.nowUs << ',' << input.elapsedUs << ',' << input.aoaAdc << ','
           << input.rcUs << ',' << input.modeUs << ',' << input.throttleUs << ',' << unsigned(input.flags) << ','
           << unsigned(result.state) << ',' << std::fixed << std::setprecision(5) << result.commandDeg << ','
           << result.servoUs << ',' << result.effectiveGain << ',' << memory.assistBlend << ',' << source << ','
           << drops << ',' << misses << ',' << calStatus << ',' << maxInterval << ','
           << memory.speed.speedMps << ',' << unsigned(memory.speed.status) << ',' << memory.speed.ageMs << ','
+          << result.manualDeg << ',' << result.automaticDeg << ',' << result.targetDeg << ',' << memory.aoaFilt << ','
           << (comparing ? (match ? "1" : "0") : "changed") << '\n';
         ++frames; haveData = true; previousSequence = seq; freshSnapshot = false;
       } else throw std::runtime_error("unknown log record");
