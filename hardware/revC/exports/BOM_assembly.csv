@@ -1,0 +1,20 @@
+﻿Reference,Quantity,Part / specification,Footprint,Manufacturer part,Supplier reference,Assembly note
+C1,1,470uF,CAP-TH_BD8.0-P3.50-D0.6-FD,16ZLH470MEFC8X11.5,C109066,
+C2,1,10uF,C0805,CL21A106KAYNNNE,C15850,
+"C3,C4,C5,C6",4,100nF,C0805,CL21B104KBCNNNC,C1711,
+"J2,J3,J4,J5,J6",5,HDR-M_2.54_1x3P,HDR-TH_3P-P2.54-V-M,,,"Generic 2.54mm connector; library SKU is not a validated purchasing choice. 1=GND, 2=power/NC, 3=signal; J3 power contacts >=3A; J4/J5 center pins NC."
+"J7,JP1,JP2",3,HDR-M_2.54_1x2P,HDR-TH_2P-P2.54-V-M-1,,,Generic 2.54mm connector; library SKU is not a validated purchasing choice.
+J8,1,HDR-M_2.54_2x5,HDR-TH_10P-P2.54-V-M-R2-C5-S2.54,,,Generic 2.54mm connector; library SKU is not a validated purchasing choice. 2x5; wired to an external 5V-compatible TF module by signal names.
+"JN1,JN2",2,Female socket 1x9 2.54mm,HDR-TH_9P-P2.54-V-F-1,,,Generic 2.54mm connector; library SKU is not a validated purchasing choice. Matched mating height >=8.5mm; Nano pins must match manufacturer hole coordinates.
+JN3,1,Female socket 1x5 2.54mm,HDR-TH_5P-P2.54-V-F,,,Generic 2.54mm connector; library SKU is not a validated purchasing choice. Matched mating height >=8.5mm; Nano pins must match manufacturer hole coordinates.
+Q1,1,AO4407A,SOP-8_L4.9-W3.9-P1.27-LS6.0-BL,AO4407A,C3019374,
+"R1,R5,R6,R7,R9,R18",6,100kΩ,R0805,0805W8F1003T5E,C149504,
+"R2,R3,R4,R8,R10",5,1kΩ,R0805,0805W8F1001T5E,C17513,
+"R11,R12,R13,R17",4,10kΩ,R0805,0805W8F1002T5E,C38522,
+"R14,R15,R16",3,33Ω,R0805,0805W8F330JT5E,C17634,
+SW1,1,B3F-1000,KEY-TH_4P-L6.2-W6.2-P4.50-LS6.5,B3F-1000,C93157,
+External Nano,1,NOLOGO SuperMini Nano328P,External module,Manufacturer 23-hole PCB revision,,Solder matching 23 male pins; carrier JN1/JN2/JN3 are female sockets.
+Nano male pins,1 set,"23 matching male pins, 2.54mm pitch",9 + 9 + 5 pins,,,Module nominal hole diameter 0.9144mm: trial-fit solder tails before purchase/assembly; use actual module as alignment fixture.
+JP1/JP2 caps,2,2.54mm jumper cap,External,,,"JP1: operating power, remove before powered USB; JP2: boot-time ground configuration."
+External TF module,1,5V supply and full 5V SPI logic including MISO,External,Pololu 2587 or electrically equivalent,,Module includes 3.3V regulator and bidirectional level conversion. Bare SD socket not supported.
+TF cable,1 set,Short signal wiring <=50mm recommended,External,,,J8 pin order differs from module; wire by net names. CD optional.

@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="80mm" height="65mm" viewBox="0 0 80 65">
+<rect width="80" height="65" fill="white"/>
+<g fill="none" stroke="black" stroke-width="0.12">
+<rect x="25.73" y="14.41" width="18" height="23.5"/>
+<circle cx="27.00000000" cy="16.00000000" r="0.5"/><path d="M 26.20000000 16.00000000 h 1.6 M 27.00000000 15.20000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="18.54000000" r="0.5"/><path d="M 26.20000000 18.54000000 h 1.6 M 27.00000000 17.74000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="21.08000000" r="0.5"/><path d="M 26.20000000 21.08000000 h 1.6 M 27.00000000 20.28000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="23.62000000" r="0.5"/><path d="M 26.20000000 23.62000000 h 1.6 M 27.00000000 22.82000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="26.16000000" r="0.5"/><path d="M 26.20000000 26.16000000 h 1.6 M 27.00000000 25.36000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="28.70000000" r="0.5"/><path d="M 26.20000000 28.70000000 h 1.6 M 27.00000000 27.90000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="31.24000000" r="0.5"/><path d="M 26.20000000 31.24000000 h 1.6 M 27.00000000 30.44000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="33.78000000" r="0.5"/><path d="M 26.20000000 33.78000000 h 1.6 M 27.00000000 32.98000000 v 1.6" stroke-width="0.06"/>
+<circle cx="27.00000000" cy="36.32000000" r="0.5"/><path d="M 26.20000000 36.32000000 h 1.6 M 27.00000000 35.52000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="16.00000000" r="0.5"/><path d="M 41.65999956 16.00000000 h 1.6 M 42.45999956 15.20000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="18.54000000" r="0.5"/><path d="M 41.65999956 18.54000000 h 1.6 M 42.45999956 17.74000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="21.08000000" r="0.5"/><path d="M 41.65999956 21.08000000 h 1.6 M 42.45999956 20.28000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="23.62000000" r="0.5"/><path d="M 41.65999956 23.62000000 h 1.6 M 42.45999956 22.82000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="26.16000000" r="0.5"/><path d="M 41.65999956 26.16000000 h 1.6 M 42.45999956 25.36000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="28.70000000" r="0.5"/><path d="M 41.65999956 28.70000000 h 1.6 M 42.45999956 27.90000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="31.24000000" r="0.5"/><path d="M 41.65999956 31.24000000 h 1.6 M 42.45999956 30.44000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="33.78000000" r="0.5"/><path d="M 41.65999956 33.78000000 h 1.6 M 42.45999956 32.98000000 v 1.6" stroke-width="0.06"/>
+<circle cx="42.45999956" cy="36.32000000" r="0.5"/><path d="M 41.65999956 36.32000000 h 1.6 M 42.45999956 35.52000000 v 1.6" stroke-width="0.06"/>
+<circle cx="29.64999978" cy="36.60980384" r="0.5"/><path d="M 28.84999978 36.60980384 h 1.6 M 29.64999978 35.80980384 v 1.6" stroke-width="0.06"/>
+<circle cx="32.18999978" cy="36.60980384" r="0.5"/><path d="M 31.38999978 36.60980384 h 1.6 M 32.18999978 35.80980384 v 1.6" stroke-width="0.06"/>
+<circle cx="34.72999978" cy="36.60980384" r="0.5"/><path d="M 33.92999978 36.60980384 h 1.6 M 34.72999978 35.80980384 v 1.6" stroke-width="0.06"/>
+<circle cx="37.26999978" cy="36.60980384" r="0.5"/><path d="M 36.46999978 36.60980384 h 1.6 M 37.26999978 35.80980384 v 1.6" stroke-width="0.06"/>
+<circle cx="39.80999978" cy="36.60980384" r="0.5"/><path d="M 39.00999978 36.60980384 h 1.6 M 39.80999978 35.80980384 v 1.6" stroke-width="0.06"/>
+<path d="M 27 42 H 47 M 27 41 V 43 M 47 41 V 43"/>
+<path d="M 34.73 13 V 9 M 33.73 10 L 34.73 9 L 35.73 10"/>
+</g>
+<g font-family="Arial,sans-serif" fill="black">
+<text x="8" y="5" font-size="2.2">SuperMini Nano328P / carrier top view / USB up</text>
+<text x="30" y="8" font-size="1.8">USB</text>
+<text x="28" y="46" font-size="2">20.00 mm scale check</text>
+<text x="8" y="51" font-size="1.8">1:1 at 100% print size; circles are carrier 1.00mm drills.</text>
+<text x="8" y="54" font-size="1.8">Side span 15.46mm; pitch 2.54mm; tail offset 0.289804mm.</text>
+<text x="8" y="57" font-size="1.8">Based on manufacturer PcbDoc; checked against STEP.</text>
+<text x="24.5" y="16.5" text-anchor="end" font-size="1.5">D0</text>
+<text x="24.5" y="19.04" text-anchor="end" font-size="1.5">D1</text>
+<text x="24.5" y="21.58" text-anchor="end" font-size="1.5">D2</text>
+<text x="24.5" y="24.12" text-anchor="end" font-size="1.5">D3</text>
+<text x="24.5" y="26.66" text-anchor="end" font-size="1.5">D4</text>
+<text x="24.5" y="29.2" text-anchor="end" font-size="1.5">D5</text>
+<text x="24.5" y="31.740000000000002" text-anchor="end" font-size="1.5">D6</text>
+<text x="24.5" y="34.28" text-anchor="end" font-size="1.5">D7</text>
+<text x="24.5" y="36.82" text-anchor="end" font-size="1.5">D8</text>
+<text x="44.95999956" y="16.5" font-size="1.5">5V</text>
+<text x="44.95999956" y="19.04" font-size="1.5">GND</text>
+<text x="44.95999956" y="21.58" font-size="1.5">VIN</text>
+<text x="44.95999956" y="24.12" font-size="1.5">A5</text>
+<text x="44.95999956" y="26.66" font-size="1.5">A4</text>
+<text x="44.95999956" y="29.2" font-size="1.5">A3</text>
+<text x="44.95999956" y="31.740000000000002" font-size="1.5">A2</text>
+<text x="44.95999956" y="34.28" font-size="1.5">A1</text>
+<text x="44.95999956" y="36.82" font-size="1.5">A0</text>
+<text x="29.64999978" y="39.60980384" text-anchor="middle" font-size="1.4">D9</text>
+<text x="32.18999978" y="39.60980384" text-anchor="middle" font-size="1.4">D10</text>
+<text x="34.72999978" y="39.60980384" text-anchor="middle" font-size="1.4">D11</text>
+<text x="37.26999978" y="39.60980384" text-anchor="middle" font-size="1.4">D12</text>
+<text x="39.80999978" y="39.60980384" text-anchor="middle" font-size="1.4">D13</text>
+</g></svg>

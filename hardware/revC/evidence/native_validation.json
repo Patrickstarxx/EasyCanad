@@ -1,0 +1,538 @@
+{
+  "ok": true,
+  "value": {
+    "projectName": "/EasyCanad SuperNano TF RevC",
+    "projectUuid": "d21eb85efd2d0f9fe59506f3b59ffa0ba82e45ecd407de98cd3c375312f69eed",
+    "pages": [
+      "01_Power_Nano",
+      "02_PWM_Servo",
+      "03_Analog_Controls",
+      "04_TF_Interface"
+    ],
+    "schematicDrc": [
+      {
+        "type": "warn",
+        "rule": "ATTRMATCHCODE",
+        "primitives": [
+          {
+            "primitiveId": "66029ec6c384269d",
+            "sheet": "46e6668ae847376e",
+            "name": "JP1($1I102)"
+          },
+          {
+            "primitiveId": "85ec4b85bf61fa6a",
+            "sheet": "46e6668ae847376e",
+            "name": "JN1($1I111)"
+          },
+          {
+            "primitiveId": "a1bca17671ba435c",
+            "sheet": "46e6668ae847376e",
+            "name": "JN2($1I118)"
+          },
+          {
+            "primitiveId": "09860818de95dc5c",
+            "sheet": "46e6668ae847376e",
+            "name": "JN3($1I122)"
+          },
+          {
+            "primitiveId": "5c8f06f73296f02b",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J3($2I104)"
+          },
+          {
+            "primitiveId": "f1eacdf8960b6015",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J4($2I108)"
+          },
+          {
+            "primitiveId": "69020209037fd6ab",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J5($2I111)"
+          },
+          {
+            "primitiveId": "a96f31fdfa85b45d",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J2($2I132)"
+          },
+          {
+            "primitiveId": "1e81276ae91ae88f",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J6($3I58)"
+          },
+          {
+            "primitiveId": "3c3f0f4264eb81fe",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J7($3I79)"
+          },
+          {
+            "primitiveId": "cfa2591bc5c2429a",
+            "sheet": "4821c6e6a7389c87",
+            "name": "JP2($3I82)"
+          },
+          {
+            "primitiveId": "3330f2e8c4507db7",
+            "sheet": "532cc76659492722",
+            "name": "J8($4I254)"
+          }
+        ]
+      }
+    ],
+    "pcbDrc": [],
+    "components": 38,
+    "placement": [
+      {
+        "ref": "C1",
+        "x": 950,
+        "y": 280,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C2",
+        "x": 1020,
+        "y": 1300,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C3",
+        "x": 1010,
+        "y": 1450,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C4",
+        "x": 1550,
+        "y": 370,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C5",
+        "x": 1060,
+        "y": 850,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "C6",
+        "x": 1540,
+        "y": 1250,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "J2",
+        "x": 130,
+        "y": 230,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J3",
+        "x": 130,
+        "y": 1220,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J4",
+        "x": 130,
+        "y": 920,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J5",
+        "x": 130,
+        "y": 620,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J6",
+        "x": 1670,
+        "y": 1390,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J7",
+        "x": 1670,
+        "y": 1000,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J8",
+        "x": 1460,
+        "y": 230,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "JN1",
+        "x": 560,
+        "y": 1100,
+        "rotation": -90.00000000000001,
+        "layer": 1
+      },
+      {
+        "ref": "JN2",
+        "x": 1168.6614,
+        "y": 1100,
+        "rotation": -90.00000000000001,
+        "layer": 1
+      },
+      {
+        "ref": "JN3",
+        "x": 864.3307,
+        "y": 688.5904,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "JP1",
+        "x": 1370,
+        "y": 720,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "JP2",
+        "x": 1670,
+        "y": 720,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "Q1",
+        "x": 450,
+        "y": 250,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R1",
+        "x": 650,
+        "y": 550,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R2",
+        "x": 350,
+        "y": 1220,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R3",
+        "x": 350,
+        "y": 920,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R4",
+        "x": 350,
+        "y": 620,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R5",
+        "x": 480,
+        "y": 1130,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R6",
+        "x": 480,
+        "y": 830,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R7",
+        "x": 740,
+        "y": 480,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R8",
+        "x": 400,
+        "y": 450,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R9",
+        "x": 570,
+        "y": 430,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R10",
+        "x": 1440,
+        "y": 1420,
+        "rotation": 180,
+        "layer": 1
+      },
+      {
+        "ref": "R11",
+        "x": 1350,
+        "y": 1260,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R12",
+        "x": 1550,
+        "y": 820,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R13",
+        "x": 1540,
+        "y": 540,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R14",
+        "x": 1400,
+        "y": 430,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R15",
+        "x": 1400,
+        "y": 510,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R16",
+        "x": 1400,
+        "y": 590,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R17",
+        "x": 780,
+        "y": 900,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R18",
+        "x": 1000,
+        "y": 560,
+        "rotation": -90.00000000000001,
+        "layer": 1
+      },
+      {
+        "ref": "SW1",
+        "x": 1450,
+        "y": 1000,
+        "rotation": 0,
+        "layer": 1
+      }
+    ],
+    "socketPads": [
+      {
+        "ref": "JN1",
+        "pin": "1",
+        "x": 560,
+        "y": 1500,
+        "net": ""
+      },
+      {
+        "ref": "JN1",
+        "pin": "2",
+        "x": 560,
+        "y": 1400,
+        "net": ""
+      },
+      {
+        "ref": "JN1",
+        "pin": "3",
+        "x": 560,
+        "y": 1300,
+        "net": "俯仰_PWM"
+      },
+      {
+        "ref": "JN1",
+        "pin": "4",
+        "x": 560,
+        "y": 1200,
+        "net": "模式_PWM"
+      },
+      {
+        "ref": "JN1",
+        "pin": "5",
+        "x": 560,
+        "y": 1100,
+        "net": "标定_按下接地"
+      },
+      {
+        "ref": "JN1",
+        "pin": "6",
+        "x": 560,
+        "y": 1000,
+        "net": "地面配置_接地有效"
+      },
+      {
+        "ref": "JN1",
+        "pin": "7",
+        "x": 560,
+        "y": 900,
+        "net": "TF_插卡检测"
+      },
+      {
+        "ref": "JN1",
+        "pin": "8",
+        "x": 560,
+        "y": 800,
+        "net": "油门_PWM"
+      },
+      {
+        "ref": "JN1",
+        "pin": "9",
+        "x": 560,
+        "y": 700,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "1",
+        "x": 1168.7,
+        "y": 1500,
+        "net": "+5V_LOGIC"
+      },
+      {
+        "ref": "JN2",
+        "pin": "2",
+        "x": 1168.7,
+        "y": 1400,
+        "net": "GND"
+      },
+      {
+        "ref": "JN2",
+        "pin": "3",
+        "x": 1168.7,
+        "y": 1300,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "4",
+        "x": 1168.7,
+        "y": 1200,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "5",
+        "x": 1168.7,
+        "y": 1100,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "6",
+        "x": 1168.7,
+        "y": 1000,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "7",
+        "x": 1168.7,
+        "y": 900,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "8",
+        "x": 1168.7,
+        "y": 800,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "9",
+        "x": 1168.7,
+        "y": 700,
+        "net": "风标_ADC"
+      },
+      {
+        "ref": "JN3",
+        "pin": "5",
+        "x": 1064.3,
+        "y": 688.6,
+        "net": "TF_SCK_主控5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "4",
+        "x": 964.3,
+        "y": 688.6,
+        "net": "TF_MISO_5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "3",
+        "x": 864.3,
+        "y": 688.6,
+        "net": "TF_MOSI_主控5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "2",
+        "x": 764.3,
+        "y": 688.6,
+        "net": "TF_CS_主控5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "1",
+        "x": 664.3,
+        "y": 688.6,
+        "net": "舵机_主控"
+      }
+    ],
+    "mountingHoles": [
+      {
+        "name": "MH1",
+        "x": 100,
+        "y": 1500,
+        "hole": [
+          "ROUND",
+          126
+        ]
+      },
+      {
+        "name": "MH2",
+        "x": 1700,
+        "y": 480,
+        "hole": [
+          "ROUND",
+          126
+        ]
+      }
+    ],
+    "tracks": 295,
+    "vias": 12
+  },
+  "logs": [],
+  "durationMs": 6299
+}

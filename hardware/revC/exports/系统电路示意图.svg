@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1310" viewBox="0 0 1800 1310">
+<rect width="100%" height="100%" fill="white"/>
+<text x="45" y="56" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="36" fill="#172335">EasyCanad Rev C｜中文系统电路示意图</text>
+<text x="45" y="94" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="#536175">载板 45.72 × 40.64mm · SuperNano 三排直接插接 · 供电/接口框图，详细针脚以原理图和接线表为准</text>
+<rect x="45" y="135" width="345" height="150" rx="12" fill="#f7f9fc" stroke="#a76214" stroke-width="3"/>
+<rect x="45" y="135" width="345" height="46" rx="12" fill="#a76214"/>
+<text x="60" y="165" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">J3：俯仰接口兼供电</text>
+<text x="60" y="215" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">1 地 / 2 稳压5V / 3 PWM</text>
+<text x="60" y="245" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">电源来自接收机5V总线</text>
+<text x="60" y="275" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">载板取消独立BEC插针</text>
+<rect x="450" y="135" width="240" height="150" rx="12" fill="#f7f9fc" stroke="#a76214" stroke-width="3"/>
+<rect x="450" y="135" width="240" height="46" rx="12" fill="#a76214"/>
+<text x="465" y="165" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">Q1：反接保护</text>
+<text x="465" y="215" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">AO4407A</text>
+<text x="465" y="245" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">R1：100kΩ栅极下拉</text>
+<rect x="750" y="135" width="250" height="150" rx="12" fill="#f7f9fc" stroke="#a76214" stroke-width="3"/>
+<rect x="750" y="135" width="250" height="46" rx="12" fill="#a76214"/>
+<text x="765" y="165" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">保护后 5V 总线</text>
+<text x="765" y="215" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">C1：470µF/16V</text>
+<text x="765" y="245" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">直接供给 J2 舵机</text>
+<rect x="1060" y="135" width="260" height="150" rx="12" fill="#f7f9fc" stroke="#a76214" stroke-width="3"/>
+<rect x="1060" y="135" width="260" height="46" rx="12" fill="#a76214"/>
+<text x="1075" y="165" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">JP1：电源跳线</text>
+<text x="1075" y="215" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">运行：短接</text>
+<text x="1075" y="245" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">接带电USB前：拔掉</text>
+<rect x="1380" y="135" width="370" height="150" rx="12" fill="#f7f9fc" stroke="#a76214" stroke-width="3"/>
+<rect x="1380" y="135" width="370" height="46" rx="12" fill="#a76214"/>
+<text x="1395" y="165" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">逻辑 5V 电源</text>
+<text x="1395" y="215" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">供给 Nano、风标和TF模块</text>
+<text x="1395" y="245" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">C2/C3/C4/C6 电源去耦</text>
+<text x="1395" y="275" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">载板没有3.3V稳压或转换</text>
+<polyline points="390,205 450,205" fill="none" stroke="#a76214" stroke-width="4"/>
+<polygon points="450.00,205.00 438.29,210.65 438.29,199.35" fill="#a76214"/>
+<polyline points="690,205 750,205" fill="none" stroke="#a76214" stroke-width="4"/>
+<polygon points="750.00,205.00 738.29,210.65 738.29,199.35" fill="#a76214"/>
+<polyline points="1000,205 1060,205" fill="none" stroke="#a76214" stroke-width="4"/>
+<polygon points="1060.00,205.00 1048.29,210.65 1048.29,199.35" fill="#a76214"/>
+<polyline points="1320,205 1380,205" fill="none" stroke="#a76214" stroke-width="4"/>
+<polygon points="1380.00,205.00 1368.29,210.65 1368.29,199.35" fill="#a76214"/>
+<polyline points="1550,285 1550,330 1035,330 1035,400" fill="none" stroke="#a76214" stroke-width="4"/>
+<polygon points="1035.00,400.00 1029.35,388.29 1040.65,388.29" fill="#a76214"/>
+<text x="1070" y="356" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#a76214">逻辑5V</text>
+<polyline points="900,285 900,310 1775,310 1775,475 1740,475" fill="none" stroke="#a76214" stroke-width="4"/>
+<polygon points="1740.00,475.00 1751.71,469.35 1751.71,480.65" fill="#a76214"/>
+<text x="1540" y="304" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="20" fill="#a76214">舵机总线</text>
+<rect x="45" y="410" width="385" height="105" rx="12" fill="#f7f9fc" stroke="#2467a5" stroke-width="3"/>
+<rect x="45" y="410" width="385" height="46" rx="12" fill="#2467a5"/>
+<text x="60" y="440" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">J3：俯仰 PWM 输入</text>
+<text x="60" y="490" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">与上方供电入口为同一个接口</text>
+<rect x="45" y="550" width="385" height="105" rx="12" fill="#f7f9fc" stroke="#2467a5" stroke-width="3"/>
+<rect x="45" y="550" width="385" height="46" rx="12" fill="#2467a5"/>
+<text x="60" y="580" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">J4：模式 PWM 输入</text>
+<text x="60" y="630" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">1 地 / 2 NC / 3 PWM</text>
+<rect x="45" y="690" width="385" height="105" rx="12" fill="#f7f9fc" stroke="#2467a5" stroke-width="3"/>
+<rect x="45" y="690" width="385" height="46" rx="12" fill="#2467a5"/>
+<text x="60" y="720" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">J5：油门 PWM 采样</text>
+<text x="60" y="770" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">1 地 / 2 NC / 3 PWM</text>
+<rect x="740" y="400" width="350" height="425" rx="12" fill="#f7f9fc" stroke="#2467a5" stroke-width="3"/>
+<rect x="740" y="400" width="350" height="46" rx="12" fill="#2467a5"/>
+<text x="755" y="430" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">SuperMini Nano328P</text>
+<text x="755" y="480" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">ATmega328P，5V逻辑</text>
+<text x="755" y="510" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">JN1/JN2/JN3 直接插座</text>
+<text x="755" y="540" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">D2 / D3 / D7：PWM输入</text>
+<text x="755" y="570" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">A0：风标模拟输入</text>
+<text x="755" y="600" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">D9：鸭翼舵机输出</text>
+<text x="755" y="630" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">D4：标定 / D5：地面配置</text>
+<text x="755" y="660" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">D10～D13：SPI接口</text>
+<text x="755" y="690" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">D6：可选插卡检测</text>
+<text x="755" y="720" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">VIN 悬空</text>
+<polyline points="430,465 740,465" fill="none" stroke="#2467a5" stroke-width="4"/>
+<polygon points="740.00,465.00 728.29,470.65 728.29,459.35" fill="#2467a5"/>
+<text x="455" y="454" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" fill="#2467a5">R2 1k + R5 100k下拉</text>
+<text x="697" y="489" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" fill="#2467a5">D2</text>
+<polyline points="430,605 740,605" fill="none" stroke="#2467a5" stroke-width="4"/>
+<polygon points="740.00,605.00 728.29,610.65 728.29,599.35" fill="#2467a5"/>
+<text x="455" y="594" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" fill="#2467a5">R3 1k + R6 100k下拉</text>
+<text x="697" y="629" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" fill="#2467a5">D3</text>
+<polyline points="430,745 740,745" fill="none" stroke="#2467a5" stroke-width="4"/>
+<polygon points="740.00,745.00 728.29,750.65 728.29,739.35" fill="#2467a5"/>
+<text x="455" y="734" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" fill="#2467a5">R4 1k + R7 100k下拉</text>
+<text x="697" y="769" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="19" fill="#2467a5">D7</text>
+<rect x="1320" y="410" width="420" height="165" rx="12" fill="#f7f9fc" stroke="#2467a5" stroke-width="3"/>
+<rect x="1320" y="410" width="420" height="46" rx="12" fill="#2467a5"/>
+<text x="1335" y="440" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">J2：鸭翼舵机输出</text>
+<text x="1335" y="490" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">1 地 / 2 总线5V / 3 PWM</text>
+<text x="1335" y="520" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">D9 → R8 1k；R9 100k下拉</text>
+<text x="1335" y="550" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">一个普通5V、9g舵机</text>
+<polyline points="1090,475 1320,475" fill="none" stroke="#2467a5" stroke-width="4"/>
+<polygon points="1320.00,475.00 1308.29,480.65 1308.29,469.35" fill="#2467a5"/>
+<text x="1160" y="463" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="23" fill="#2467a5">D9</text>
+<rect x="1320" y="610" width="420" height="215" rx="12" fill="#f7f9fc" stroke="#287253" stroke-width="3"/>
+<rect x="1320" y="610" width="420" height="46" rx="12" fill="#287253"/>
+<text x="1335" y="640" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">操作区：按钮与配置</text>
+<text x="1335" y="689" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">SW1：板载标定按钮 → D4</text>
+<text x="1335" y="718" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">J7：外置常开标定按钮 → D4</text>
+<text x="1335" y="747" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">JP2：上电前接地 → D5</text>
+<text x="1335" y="776" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">R11/R12：10k上拉</text>
+<text x="1335" y="805" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">JP1为电源跳线，见上方供电图</text>
+<polyline points="1320,665 1090,665" fill="none" stroke="#287253" stroke-width="4"/>
+<polygon points="1090.00,665.00 1101.71,659.35 1101.71,670.65" fill="#287253"/>
+<text x="1130" y="650" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#287253">D4 / D5</text>
+<rect x="45" y="950" width="485" height="170" rx="12" fill="#f7f9fc" stroke="#2467a5" stroke-width="3"/>
+<rect x="45" y="950" width="485" height="46" rx="12" fill="#2467a5"/>
+<text x="60" y="980" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">J6：模拟霍尔风标</text>
+<text x="60" y="1030" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">1 地 / 2 逻辑5V / 3 模拟信号</text>
+<text x="60" y="1060" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">0～5V 对应 0～360°</text>
+<text x="60" y="1090" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#172335">R10 1k + C5 100nF：输入滤波</text>
+<polyline points="530,1020 610,1020 610,790 740,790" fill="none" stroke="#2467a5" stroke-width="4"/>
+<polygon points="740.00,790.00 728.29,795.65 728.29,784.35" fill="#2467a5"/>
+<text x="625" y="927" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="22" fill="#2467a5">送 A0</text>
+<rect x="1240" y="940" width="500" height="255" rx="12" fill="#f7f9fc" stroke="#6a4a9b" stroke-width="3"/>
+<rect x="1240" y="940" width="500" height="46" rx="12" fill="#6a4a9b"/>
+<text x="1255" y="970" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="24" fill="white">J8：外接5V兼容TF模块</text>
+<text x="1255" y="1019" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">D10 CS / D11 MOSI / D13 SCK</text>
+<text x="1255" y="1048" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">经 R14/R15/R16 各33Ω串阻</text>
+<text x="1255" y="1077" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">D12 MISO：模块返回5V逻辑</text>
+<text x="1255" y="1106" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">R13 10k上拉，D6插卡高（可选）</text>
+<text x="1255" y="1135" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">R17：10k片选上拉；R18：100k下拉</text>
+<text x="1255" y="1164" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#172335">模块自带3.3V稳压和SPI电平转换</text>
+<polyline points="1000,825 1000,885 1175,885 1175,1060 1240,1060" fill="none" stroke="#6a4a9b" stroke-width="4"/>
+<polygon points="1240.00,1060.00 1228.29,1065.65 1228.29,1054.35" fill="#6a4a9b"/>
+<polygon points="1000.00,825.00 1005.65,836.71 994.35,836.71" fill="#6a4a9b"/>
+<text x="1020" y="867" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#6a4a9b">SPI 双向 + 可选CD</text>
+<text x="660" y="1095" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="25" fill="#6a4a9b">TF模块例：Pololu 2587</text>
+<text x="660" y="1131" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="21" fill="#6a4a9b">载板1脚接VDD，模块3V3输出不接</text>
+<text x="45" y="1233" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="23" fill="#172335">全部 GND 共地；J4/J5 中心针在载板悬空；输入按5V PWM设计；裸TF卡不能直接接J8。</text>
+<text x="45" y="1275" font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" font-size="23" fill="#536175">本轮仅完成硬件：TF日志固件尚未实现；控制回路不能因写卡阻塞。所有实物行为仍须台架验证。</text>
+</svg>

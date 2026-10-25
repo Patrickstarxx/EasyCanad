@@ -1,0 +1,610 @@
+{
+  "schematic": {
+    "components": 38,
+    "pins_checked": 114,
+    "functional_nets": 25
+  },
+  "pcb": {
+    "components": 38,
+    "pins_checked": 114,
+    "functional_nets": 25
+  },
+  "manufacturing": {
+    "files": [
+      "Drill_NPTH_Through.DRL",
+      "Drill_PTH_Through.DRL",
+      "Drill_PTH_Through_Via.DRL",
+      "FlyingProbeTesting.json",
+      "Gerber_BoardOutlineLayer.GKO",
+      "Gerber_BottomLayer.GBL",
+      "Gerber_BottomSilkscreenLayer.GBO",
+      "Gerber_BottomSolderMaskLayer.GBS",
+      "Gerber_DocumentLayer.GDL",
+      "Gerber_DrillDrawingLayer.GDD",
+      "Gerber_TopLayer.GTL",
+      "Gerber_TopPasteMaskLayer.GTP",
+      "Gerber_TopSilkscreenLayer.GTO",
+      "Gerber_TopSolderMaskLayer.GTS",
+      "PCB下单必读.txt"
+    ],
+    "width_mm": 45.72,
+    "height_mm": 40.64,
+    "area_reduction_vs_revB_percent": 64.15,
+    "npth": [
+      [
+        "2.54",
+        "38.1"
+      ],
+      [
+        "43.18",
+        "12.192"
+      ]
+    ]
+  },
+  "socket_mechanical": {
+    "pins": 23,
+    "side_row_span_mm": 15.45999956,
+    "tail_offset_mm": 0.28980384,
+    "native_max_error_mm": 0.0009804400000010816,
+    "gerber_drill_max_error_mm": 3.846296921969919e-06,
+    "tolerance_mm": 0.002,
+    "source_step_crosscheck_max_error_mm": 5.1065314001928476e-05
+  },
+  "grouped_interface_layout_passed": true,
+  "bom": {
+    "grouped_rows": 14,
+    "placed_quantity": 38
+  },
+  "native_eda": {
+    "projectName": "/EasyCanad SuperNano TF RevC",
+    "projectUuid": "d21eb85efd2d0f9fe59506f3b59ffa0ba82e45ecd407de98cd3c375312f69eed",
+    "pages": [
+      "01_Power_Nano",
+      "02_PWM_Servo",
+      "03_Analog_Controls",
+      "04_TF_Interface"
+    ],
+    "schematicDrc": [
+      {
+        "type": "warn",
+        "rule": "ATTRMATCHCODE",
+        "primitives": [
+          {
+            "primitiveId": "66029ec6c384269d",
+            "sheet": "46e6668ae847376e",
+            "name": "JP1($1I102)"
+          },
+          {
+            "primitiveId": "85ec4b85bf61fa6a",
+            "sheet": "46e6668ae847376e",
+            "name": "JN1($1I111)"
+          },
+          {
+            "primitiveId": "a1bca17671ba435c",
+            "sheet": "46e6668ae847376e",
+            "name": "JN2($1I118)"
+          },
+          {
+            "primitiveId": "09860818de95dc5c",
+            "sheet": "46e6668ae847376e",
+            "name": "JN3($1I122)"
+          },
+          {
+            "primitiveId": "5c8f06f73296f02b",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J3($2I104)"
+          },
+          {
+            "primitiveId": "f1eacdf8960b6015",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J4($2I108)"
+          },
+          {
+            "primitiveId": "69020209037fd6ab",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J5($2I111)"
+          },
+          {
+            "primitiveId": "a96f31fdfa85b45d",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J2($2I132)"
+          },
+          {
+            "primitiveId": "1e81276ae91ae88f",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J6($3I58)"
+          },
+          {
+            "primitiveId": "3c3f0f4264eb81fe",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J7($3I79)"
+          },
+          {
+            "primitiveId": "cfa2591bc5c2429a",
+            "sheet": "4821c6e6a7389c87",
+            "name": "JP2($3I82)"
+          },
+          {
+            "primitiveId": "3330f2e8c4507db7",
+            "sheet": "532cc76659492722",
+            "name": "J8($4I254)"
+          }
+        ]
+      }
+    ],
+    "pcbDrc": [],
+    "components": 38,
+    "placement": [
+      {
+        "ref": "C1",
+        "x": 950,
+        "y": 280,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C2",
+        "x": 1020,
+        "y": 1300,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C3",
+        "x": 1010,
+        "y": 1450,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C4",
+        "x": 1550,
+        "y": 370,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "C5",
+        "x": 1060,
+        "y": 850,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "C6",
+        "x": 1540,
+        "y": 1250,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "J2",
+        "x": 130,
+        "y": 230,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J3",
+        "x": 130,
+        "y": 1220,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J4",
+        "x": 130,
+        "y": 920,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J5",
+        "x": 130,
+        "y": 620,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J6",
+        "x": 1670,
+        "y": 1390,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J7",
+        "x": 1670,
+        "y": 1000,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "J8",
+        "x": 1460,
+        "y": 230,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "JN1",
+        "x": 560,
+        "y": 1100,
+        "rotation": -90.00000000000001,
+        "layer": 1
+      },
+      {
+        "ref": "JN2",
+        "x": 1168.6614,
+        "y": 1100,
+        "rotation": -90.00000000000001,
+        "layer": 1
+      },
+      {
+        "ref": "JN3",
+        "x": 864.3307,
+        "y": 688.5904,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "JP1",
+        "x": 1370,
+        "y": 720,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "JP2",
+        "x": 1670,
+        "y": 720,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "Q1",
+        "x": 450,
+        "y": 250,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R1",
+        "x": 650,
+        "y": 550,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R2",
+        "x": 350,
+        "y": 1220,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R3",
+        "x": 350,
+        "y": 920,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R4",
+        "x": 350,
+        "y": 620,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R5",
+        "x": 480,
+        "y": 1130,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R6",
+        "x": 480,
+        "y": 830,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R7",
+        "x": 740,
+        "y": 480,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R8",
+        "x": 400,
+        "y": 450,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R9",
+        "x": 570,
+        "y": 430,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R10",
+        "x": 1440,
+        "y": 1420,
+        "rotation": 180,
+        "layer": 1
+      },
+      {
+        "ref": "R11",
+        "x": 1350,
+        "y": 1260,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R12",
+        "x": 1550,
+        "y": 820,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R13",
+        "x": 1540,
+        "y": 540,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R14",
+        "x": 1400,
+        "y": 430,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R15",
+        "x": 1400,
+        "y": 510,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R16",
+        "x": 1400,
+        "y": 590,
+        "rotation": 0,
+        "layer": 1
+      },
+      {
+        "ref": "R17",
+        "x": 780,
+        "y": 900,
+        "rotation": 90,
+        "layer": 1
+      },
+      {
+        "ref": "R18",
+        "x": 1000,
+        "y": 560,
+        "rotation": -90.00000000000001,
+        "layer": 1
+      },
+      {
+        "ref": "SW1",
+        "x": 1450,
+        "y": 1000,
+        "rotation": 0,
+        "layer": 1
+      }
+    ],
+    "socketPads": [
+      {
+        "ref": "JN1",
+        "pin": "1",
+        "x": 560,
+        "y": 1500,
+        "net": ""
+      },
+      {
+        "ref": "JN1",
+        "pin": "2",
+        "x": 560,
+        "y": 1400,
+        "net": ""
+      },
+      {
+        "ref": "JN1",
+        "pin": "3",
+        "x": 560,
+        "y": 1300,
+        "net": "俯仰_PWM"
+      },
+      {
+        "ref": "JN1",
+        "pin": "4",
+        "x": 560,
+        "y": 1200,
+        "net": "模式_PWM"
+      },
+      {
+        "ref": "JN1",
+        "pin": "5",
+        "x": 560,
+        "y": 1100,
+        "net": "标定_按下接地"
+      },
+      {
+        "ref": "JN1",
+        "pin": "6",
+        "x": 560,
+        "y": 1000,
+        "net": "地面配置_接地有效"
+      },
+      {
+        "ref": "JN1",
+        "pin": "7",
+        "x": 560,
+        "y": 900,
+        "net": "TF_插卡检测"
+      },
+      {
+        "ref": "JN1",
+        "pin": "8",
+        "x": 560,
+        "y": 800,
+        "net": "油门_PWM"
+      },
+      {
+        "ref": "JN1",
+        "pin": "9",
+        "x": 560,
+        "y": 700,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "1",
+        "x": 1168.7,
+        "y": 1500,
+        "net": "+5V_LOGIC"
+      },
+      {
+        "ref": "JN2",
+        "pin": "2",
+        "x": 1168.7,
+        "y": 1400,
+        "net": "GND"
+      },
+      {
+        "ref": "JN2",
+        "pin": "3",
+        "x": 1168.7,
+        "y": 1300,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "4",
+        "x": 1168.7,
+        "y": 1200,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "5",
+        "x": 1168.7,
+        "y": 1100,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "6",
+        "x": 1168.7,
+        "y": 1000,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "7",
+        "x": 1168.7,
+        "y": 900,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "8",
+        "x": 1168.7,
+        "y": 800,
+        "net": ""
+      },
+      {
+        "ref": "JN2",
+        "pin": "9",
+        "x": 1168.7,
+        "y": 700,
+        "net": "风标_ADC"
+      },
+      {
+        "ref": "JN3",
+        "pin": "5",
+        "x": 1064.3,
+        "y": 688.6,
+        "net": "TF_SCK_主控5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "4",
+        "x": 964.3,
+        "y": 688.6,
+        "net": "TF_MISO_5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "3",
+        "x": 864.3,
+        "y": 688.6,
+        "net": "TF_MOSI_主控5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "2",
+        "x": 764.3,
+        "y": 688.6,
+        "net": "TF_CS_主控5V"
+      },
+      {
+        "ref": "JN3",
+        "pin": "1",
+        "x": 664.3,
+        "y": 688.6,
+        "net": "舵机_主控"
+      }
+    ],
+    "mountingHoles": [
+      {
+        "name": "MH1",
+        "x": 100,
+        "y": 1500,
+        "hole": [
+          "ROUND",
+          126
+        ]
+      },
+      {
+        "name": "MH2",
+        "x": 1700,
+        "y": 480,
+        "hole": [
+          "ROUND",
+          126
+        ]
+      }
+    ],
+    "tracks": 295,
+    "vias": 12
+  },
+  "known_schematic_warning": "ATTRMATCHCODE: 12 generic 2.54mm connectors; purchase by pin count, footprint, current rating and mating height.",
+  "bench_test_status": "Not performed. Hardware files only; TF logging firmware unchanged.",
+  "sha256": {
+    "exports/BOM_assembly.csv": "2293632468ebb74c50f2d6d549c6a9ca9b1ca3d630ba88252d31bc5f9a70946a",
+    "exports/EasyCanad_RevC_BOM.csv": "929d4ba88dc9893316c41ebcdd3bc0e4c0444025444741655a893e349795cd48",
+    "exports/EasyCanad_RevC_Gerber.zip": "a022a1f88326acb438fb5394dd28c85f66958c8639901fcac6176dc5039cedba",
+    "exports/EasyCanad_RevC_schematics.zip": "12ae3e7d8e4fce78c860081a407fd96a07eba1f2b7fbc4725a335982206d6c44",
+    "exports/nano_socket_1to1.svg": "4adc1b1adeeca67288b34a45fbbf6a20c7af027519a73fb91e9db76a2d41aea0",
+    "exports/pcb_bottom.png": "d4b9def44101526835e130f0f92f2730b9236cfa76fc60f4e6320b6d6c00c13c",
+    "exports/pcb_bottom.svg": "9b1f1aff36573d467eee3d840b338e09fae905a9d119a64313bdc3c3e45cc757",
+    "exports/pcb_netlist.json": "dca37d632f8b28c336805fa40dd1cb176d297fd4c342ea2320d23a528d74a1ff",
+    "exports/pcb_routed.png": "3ba81f4c261ee1ebce49fcd5554e9a73e9e75e19368f52af0d9d2dbb22be3958",
+    "exports/pcb_routed.svg": "804f2fc804c7458c4b0aa544269c70f737180fe1f1808d8e051ad850982ca23a",
+    "exports/schematic_netlist.json": "3a34b07b245478ba696d6e7bb9383539088bb910b00672036dad46eac14ae0fa",
+    "exports/系统电路示意图.png": "07c85c2cf4b5f53f701ee9c908170ce1dd2fb2cd0a0ab03e34aaeda820e3f3ed",
+    "exports/系统电路示意图.svg": "afa84ca0126e6114406d02de2d88d8c138d250845c5d30d35c546f2763bd817b"
+  },
+  "passed_file_checks": true,
+  "errors": []
+}

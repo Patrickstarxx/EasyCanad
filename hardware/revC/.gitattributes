@@ -1,0 +1,9 @@
+# Preserve native EDA documents, exported netlists and BOM bytes across checkouts.
+*.eprj3 -text
+*.esch2 -text
+*.epcb2 -text
+*.epan2 -text
+*.ecfg -text
+*.csv -text
+exports/*.json -text -diff
+exports/*.svg -text

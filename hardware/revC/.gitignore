@@ -1,0 +1,16 @@
+.work/
+evidence/*
+!evidence/native_validation.json
+!evidence/validation_report.json
+!evidence/local_router_audit.json
+tools/*
+!tools/eda_cli.py
+!tools/export_validate.js
+!tools/verify_design.py
+!tools/extract_nano_geometry.py
+!tools/draw_system.py
+!tools/render_gerber.py
+exports/pcb_placement.png
+/EasyCanad SuperNano TF RevC/*.zip
+/EasyCanad SuperNano TF RevC/*.csv
+/EasyCanad SuperNano TF RevC/*netlist.json
