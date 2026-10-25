@@ -1,0 +1,951 @@
+{
+  "revision": "B",
+  "parts": [
+    {
+      "ref": "J1",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "eab4a8150b6d4918927e38d645cd50f2"
+      },
+      "lcsc": "C124375",
+      "mpn": "HDR-M_2.54_1x2P",
+      "pins": {
+        "1": "BEC_5V_IN",
+        "2": "GND"
+      },
+      "page": 0,
+      "x": 130,
+      "y": 670,
+      "rotation": 0,
+      "description": "BEC input: regulated 5V only"
+    },
+    {
+      "ref": "Q1",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "a8c4b1f1e9ac42c3bad64dc28a01c51f"
+      },
+      "lcsc": "C3019374",
+      "mpn": "AO4407A",
+      "pins": {
+        "1": "+5V_BUS",
+        "2": "+5V_BUS",
+        "3": "+5V_BUS",
+        "4": "Q_GATE",
+        "5": "BEC_5V_IN",
+        "6": "BEC_5V_IN",
+        "7": "BEC_5V_IN",
+        "8": "BEC_5V_IN"
+      },
+      "page": 0,
+      "x": 390,
+      "y": 670,
+      "rotation": 0,
+      "description": "AO4407A reverse polarity protection; D=input, S=protected bus"
+    },
+    {
+      "ref": "R1",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "70d0676a7e554bf2bb2f7d2e56e17c75"
+      },
+      "lcsc": "C149504",
+      "mpn": "0805W8F1003T5E",
+      "pins": {
+        "1": "Q_GATE",
+        "2": "GND"
+      },
+      "page": 0,
+      "x": 620,
+      "y": 680,
+      "rotation": 90,
+      "description": "100k gate pulldown"
+    },
+    {
+      "ref": "C1",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "bb2b8d8e9c02407794e5a737b1dfad09"
+      },
+      "lcsc": "C109066",
+      "mpn": "16ZLH470MEFC8X11.5",
+      "pins": {
+        "1": "+5V_BUS",
+        "2": "GND"
+      },
+      "page": 0,
+      "x": 850,
+      "y": 680,
+      "rotation": 90,
+      "description": "470uF/16V servo bulk, observe polarity"
+    },
+    {
+      "ref": "JP1",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "eab4a8150b6d4918927e38d645cd50f2"
+      },
+      "lcsc": "C124375",
+      "mpn": "HDR-M_2.54_1x2P",
+      "pins": {
+        "1": "+5V_BUS",
+        "2": "+5V_LOGIC"
+      },
+      "page": 0,
+      "x": 130,
+      "y": 470,
+      "rotation": 0,
+      "description": "RUN power jumper; OPEN before USB connection"
+    },
+    {
+      "ref": "C2",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "8c1f4a9e9d204b148b36ce719c891bd1"
+      },
+      "lcsc": "C15850",
+      "mpn": "CL21A106KAYNNNE",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GND"
+      },
+      "page": 0,
+      "x": 390,
+      "y": 470,
+      "rotation": 90,
+      "description": "10uF logic decoupling"
+    },
+    {
+      "ref": "C3",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "aa6f916383374785be390c4ddc7bf610"
+      },
+      "lcsc": "C1711",
+      "mpn": "CL21B104KBCNNNC",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GND"
+      },
+      "page": 0,
+      "x": 620,
+      "y": 470,
+      "rotation": 90,
+      "description": "100nF logic decoupling"
+    },
+    {
+      "ref": "JN1",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "243b099061954042910fefbdf7966812"
+      },
+      "lcsc": "C39576",
+      "mpn": "HDR-F_2.54_1x9P",
+      "pins": {
+        "1": null,
+        "2": null,
+        "3": "RC_PITCH",
+        "4": "RC_MODE",
+        "5": "CALI",
+        "6": "GROUND_EN",
+        "7": "CARD_DETECT",
+        "8": "RC_THROTTLE",
+        "9": null
+      },
+      "page": 0,
+      "x": 160,
+      "y": 240,
+      "rotation": 0,
+      "description": "Nano D0 D1 D2 D3 D4 D5 D6 D7 D8; short harness"
+    },
+    {
+      "ref": "JN2",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "243b099061954042910fefbdf7966812"
+      },
+      "lcsc": "C39576",
+      "mpn": "HDR-F_2.54_1x9P",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GND",
+        "3": null,
+        "4": null,
+        "5": null,
+        "6": null,
+        "7": null,
+        "8": null,
+        "9": "AOA_ADC"
+      },
+      "page": 0,
+      "x": 500,
+      "y": 240,
+      "rotation": 0,
+      "description": "Nano 5V GND VIN A5 A4 A3 A2 A1 A0; VIN left open"
+    },
+    {
+      "ref": "JN3",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "65d7e7f793d84c5c8970a21fb3f06871"
+      },
+      "lcsc": "C50950",
+      "mpn": "HDR-F_2.54_1x5P",
+      "pins": {
+        "1": "SERVO_MCU",
+        "2": "SD_CS_5V",
+        "3": "SD_MOSI_5V",
+        "4": "SD_MISO_5V",
+        "5": "SD_SCK_5V"
+      },
+      "page": 0,
+      "x": 850,
+      "y": 240,
+      "rotation": 0,
+      "description": "Nano D9 D10 D11 D12 D13; short harness"
+    },
+    {
+      "ref": "J3",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "acd188b15a9c406bb9cb83c474d5327e"
+      },
+      "lcsc": "C2937625",
+      "mpn": "HDR-M_2.54_1x3P",
+      "pins": {
+        "1": "GND",
+        "2": "+5V_BUS",
+        "3": "PITCH_RAW"
+      },
+      "page": 1,
+      "x": 130,
+      "y": 680,
+      "rotation": 0,
+      "description": "Receiver PWM: pin1 GND, pin2 +5V, pin3 signal"
+    },
+    {
+      "ref": "J4",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "acd188b15a9c406bb9cb83c474d5327e"
+      },
+      "lcsc": "C2937625",
+      "mpn": "HDR-M_2.54_1x3P",
+      "pins": {
+        "1": "GND",
+        "2": "+5V_BUS",
+        "3": "MODE_RAW"
+      },
+      "page": 1,
+      "x": 130,
+      "y": 510,
+      "rotation": 0,
+      "description": "Receiver PWM: pin1 GND, pin2 +5V, pin3 signal"
+    },
+    {
+      "ref": "J5",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "acd188b15a9c406bb9cb83c474d5327e"
+      },
+      "lcsc": "C2937625",
+      "mpn": "HDR-M_2.54_1x3P",
+      "pins": {
+        "1": "GND",
+        "2": "+5V_BUS",
+        "3": "THROTTLE_RAW"
+      },
+      "page": 1,
+      "x": 130,
+      "y": 340,
+      "rotation": 0,
+      "description": "Receiver PWM: pin1 GND, pin2 +5V, pin3 signal"
+    },
+    {
+      "ref": "R2",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "bb42a40a4c514c729b3c2928e464ad80"
+      },
+      "lcsc": "C17513",
+      "mpn": "0805W8F1001T5E",
+      "pins": {
+        "1": "PITCH_RAW",
+        "2": "PITCH_BUF"
+      },
+      "page": 1,
+      "x": 370,
+      "y": 680,
+      "rotation": 90,
+      "description": "1k receiver input series"
+    },
+    {
+      "ref": "R5",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "70d0676a7e554bf2bb2f7d2e56e17c75"
+      },
+      "lcsc": "C149504",
+      "mpn": "0805W8F1003T5E",
+      "pins": {
+        "1": "PITCH_BUF",
+        "2": "GND"
+      },
+      "page": 1,
+      "x": 590,
+      "y": 680,
+      "rotation": 90,
+      "description": "100k defined low when receiver unplugged"
+    },
+    {
+      "ref": "R3",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "bb42a40a4c514c729b3c2928e464ad80"
+      },
+      "lcsc": "C17513",
+      "mpn": "0805W8F1001T5E",
+      "pins": {
+        "1": "MODE_RAW",
+        "2": "MODE_BUF"
+      },
+      "page": 1,
+      "x": 370,
+      "y": 510,
+      "rotation": 90,
+      "description": "1k receiver input series"
+    },
+    {
+      "ref": "R6",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "70d0676a7e554bf2bb2f7d2e56e17c75"
+      },
+      "lcsc": "C149504",
+      "mpn": "0805W8F1003T5E",
+      "pins": {
+        "1": "MODE_BUF",
+        "2": "GND"
+      },
+      "page": 1,
+      "x": 590,
+      "y": 510,
+      "rotation": 90,
+      "description": "100k defined low when receiver unplugged"
+    },
+    {
+      "ref": "R4",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "bb42a40a4c514c729b3c2928e464ad80"
+      },
+      "lcsc": "C17513",
+      "mpn": "0805W8F1001T5E",
+      "pins": {
+        "1": "THROTTLE_RAW",
+        "2": "THROTTLE_BUF"
+      },
+      "page": 1,
+      "x": 370,
+      "y": 340,
+      "rotation": 90,
+      "description": "1k receiver input series"
+    },
+    {
+      "ref": "R7",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "70d0676a7e554bf2bb2f7d2e56e17c75"
+      },
+      "lcsc": "C149504",
+      "mpn": "0805W8F1003T5E",
+      "pins": {
+        "1": "THROTTLE_BUF",
+        "2": "GND"
+      },
+      "page": 1,
+      "x": 590,
+      "y": 340,
+      "rotation": 90,
+      "description": "100k defined low when receiver unplugged"
+    },
+    {
+      "ref": "U4",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "debbb9e8f58d4cd7b31c7e40ac0a0580"
+      },
+      "lcsc": "C155176",
+      "mpn": "SN74AHCT125DR",
+      "pins": {
+        "1": "GND",
+        "2": "PITCH_BUF",
+        "3": "RC_PITCH",
+        "4": "GND",
+        "5": "MODE_BUF",
+        "6": "RC_MODE",
+        "7": "GND",
+        "8": "RC_THROTTLE",
+        "9": "THROTTLE_BUF",
+        "10": "GND",
+        "11": "SD_MISO_5V",
+        "12": "TF_MISO",
+        "13": "SD_CS_5V",
+        "14": "+5V_LOGIC"
+      },
+      "page": 1,
+      "x": 900,
+      "y": 600,
+      "rotation": 0,
+      "description": "AHCT125: 3.3/5V PWM to 5V; MISO enabled only when D10 low"
+    },
+    {
+      "ref": "C4",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "aa6f916383374785be390c4ddc7bf610"
+      },
+      "lcsc": "C1711",
+      "mpn": "CL21B104KBCNNNC",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GND"
+      },
+      "page": 1,
+      "x": 900,
+      "y": 380,
+      "rotation": 90,
+      "description": "U4 100nF local"
+    },
+    {
+      "ref": "J2",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "acd188b15a9c406bb9cb83c474d5327e"
+      },
+      "lcsc": "C2937625",
+      "mpn": "HDR-M_2.54_1x3P",
+      "pins": {
+        "1": "GND",
+        "2": "+5V_BUS",
+        "3": "SERVO_OUT"
+      },
+      "page": 1,
+      "x": 130,
+      "y": 140,
+      "rotation": 0,
+      "description": "Servo: pin1 GND, pin2 +5V, pin3 signal"
+    },
+    {
+      "ref": "R8",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "bb42a40a4c514c729b3c2928e464ad80"
+      },
+      "lcsc": "C17513",
+      "mpn": "0805W8F1001T5E",
+      "pins": {
+        "1": "SERVO_MCU",
+        "2": "SERVO_OUT"
+      },
+      "page": 1,
+      "x": 370,
+      "y": 140,
+      "rotation": 90,
+      "description": "1k servo signal series, limits unpowered input current"
+    },
+    {
+      "ref": "R9",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "70d0676a7e554bf2bb2f7d2e56e17c75"
+      },
+      "lcsc": "C149504",
+      "mpn": "0805W8F1003T5E",
+      "pins": {
+        "1": "SERVO_OUT",
+        "2": "GND"
+      },
+      "page": 1,
+      "x": 590,
+      "y": 140,
+      "rotation": 90,
+      "description": "100k servo signal pulldown"
+    },
+    {
+      "ref": "J6",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "acd188b15a9c406bb9cb83c474d5327e"
+      },
+      "lcsc": "C2937625",
+      "mpn": "HDR-M_2.54_1x3P",
+      "pins": {
+        "1": "GND",
+        "2": "+5V_LOGIC",
+        "3": "AOA_RAW"
+      },
+      "page": 2,
+      "x": 130,
+      "y": 670,
+      "rotation": 0,
+      "description": "Hall vane: 5V supply, 0..5V = 0..360 degrees"
+    },
+    {
+      "ref": "R10",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "bb42a40a4c514c729b3c2928e464ad80"
+      },
+      "lcsc": "C17513",
+      "mpn": "0805W8F1001T5E",
+      "pins": {
+        "1": "AOA_RAW",
+        "2": "AOA_ADC"
+      },
+      "page": 2,
+      "x": 390,
+      "y": 670,
+      "rotation": 90,
+      "description": "1k analog series"
+    },
+    {
+      "ref": "C5",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "aa6f916383374785be390c4ddc7bf610"
+      },
+      "lcsc": "C1711",
+      "mpn": "CL21B104KBCNNNC",
+      "pins": {
+        "1": "AOA_ADC",
+        "2": "GND"
+      },
+      "page": 2,
+      "x": 650,
+      "y": 670,
+      "rotation": 90,
+      "description": "100nF analog filter; fc about 1.59kHz"
+    },
+    {
+      "ref": "C6",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "aa6f916383374785be390c4ddc7bf610"
+      },
+      "lcsc": "C1711",
+      "mpn": "CL21B104KBCNNNC",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GND"
+      },
+      "page": 2,
+      "x": 920,
+      "y": 670,
+      "rotation": 90,
+      "description": "Hall supply decoupling"
+    },
+    {
+      "ref": "SW1",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "57ead04127214881a1f924a69521d213"
+      },
+      "lcsc": "C93157",
+      "mpn": "B3F-1000",
+      "pins": {
+        "1": "CALI",
+        "2": "CALI",
+        "3": "GND",
+        "4": "GND"
+      },
+      "page": 2,
+      "x": 150,
+      "y": 440,
+      "rotation": 0,
+      "description": "B3F-1000 calibration; verify contact pairs 1-2 / 3-4"
+    },
+    {
+      "ref": "R11",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "209453f1b0764552b318805e2b7a5c99"
+      },
+      "lcsc": "C38522",
+      "mpn": "0805W8F1002T5E",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "CALI"
+      },
+      "page": 2,
+      "x": 450,
+      "y": 440,
+      "rotation": 90,
+      "description": "10k calibration pullup"
+    },
+    {
+      "ref": "J7",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "eab4a8150b6d4918927e38d645cd50f2"
+      },
+      "lcsc": "C124375",
+      "mpn": "HDR-M_2.54_1x2P",
+      "pins": {
+        "1": "CALI",
+        "2": "GND"
+      },
+      "page": 2,
+      "x": 720,
+      "y": 440,
+      "rotation": 0,
+      "description": "Optional external calibration button"
+    },
+    {
+      "ref": "JP2",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "eab4a8150b6d4918927e38d645cd50f2"
+      },
+      "lcsc": "C124375",
+      "mpn": "HDR-M_2.54_1x2P",
+      "pins": {
+        "1": "GROUND_EN",
+        "2": "GND"
+      },
+      "page": 2,
+      "x": 150,
+      "y": 220,
+      "rotation": 0,
+      "description": "Ground configuration jumper: fit BEFORE power-up"
+    },
+    {
+      "ref": "R12",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "209453f1b0764552b318805e2b7a5c99"
+      },
+      "lcsc": "C38522",
+      "mpn": "0805W8F1002T5E",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GROUND_EN"
+      },
+      "page": 2,
+      "x": 450,
+      "y": 220,
+      "rotation": 90,
+      "description": "10k ground configuration pullup"
+    },
+    {
+      "ref": "R13",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "209453f1b0764552b318805e2b7a5c99"
+      },
+      "lcsc": "C38522",
+      "mpn": "0805W8F1002T5E",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "CARD_DETECT"
+      },
+      "page": 2,
+      "x": 720,
+      "y": 220,
+      "rotation": 90,
+      "description": "10k dry-contact card detect pullup"
+    },
+    {
+      "ref": "U2",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "6c58a4380f6e4cc8a48d6115f70d8240"
+      },
+      "lcsc": "C500795",
+      "mpn": "AP7361C-33E-13",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GND",
+        "3": "+3V3_TF",
+        "4": "GND"
+      },
+      "page": 3,
+      "x": 160,
+      "y": 660,
+      "rotation": 0,
+      "description": "AP7361C-33E-13 1A SOT223; GND tab copper area for heat"
+    },
+    {
+      "ref": "C7",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "8c1f4a9e9d204b148b36ce719c891bd1"
+      },
+      "lcsc": "C15850",
+      "mpn": "CL21A106KAYNNNE",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "GND"
+      },
+      "page": 3,
+      "x": 430,
+      "y": 660,
+      "rotation": 90,
+      "description": "10uF LDO input"
+    },
+    {
+      "ref": "C8",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "8c1f4a9e9d204b148b36ce719c891bd1"
+      },
+      "lcsc": "C15850",
+      "mpn": "CL21A106KAYNNNE",
+      "pins": {
+        "1": "+3V3_TF",
+        "2": "GND"
+      },
+      "page": 3,
+      "x": 670,
+      "y": 660,
+      "rotation": 90,
+      "description": "10uF LDO output"
+    },
+    {
+      "ref": "C9",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "aa6f916383374785be390c4ddc7bf610"
+      },
+      "lcsc": "C1711",
+      "mpn": "CL21B104KBCNNNC",
+      "pins": {
+        "1": "+3V3_TF",
+        "2": "GND"
+      },
+      "page": 3,
+      "x": 930,
+      "y": 660,
+      "rotation": 90,
+      "description": "100nF LDO/output high frequency"
+    },
+    {
+      "ref": "U3",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "1e5be916d6624826ac68be094b07bce4"
+      },
+      "lcsc": "C7661",
+      "mpn": "SN74LVC125ADR",
+      "pins": {
+        "1": "GND",
+        "2": "SD_CS_5V",
+        "3": "CS_3V3_DRV",
+        "4": "GND",
+        "5": "SD_MOSI_5V",
+        "6": "MOSI_3V3_DRV",
+        "7": "GND",
+        "8": "SCK_3V3_DRV",
+        "9": "SD_SCK_5V",
+        "10": "GND",
+        "11": null,
+        "12": "GND",
+        "13": "+3V3_TF",
+        "14": "+3V3_TF"
+      },
+      "page": 3,
+      "x": 170,
+      "y": 420,
+      "rotation": 0,
+      "description": "LVC125 at 3.3V; 5V tolerant inputs; fourth channel disabled"
+    },
+    {
+      "ref": "R14",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "72b9a53b8e064184ad3626512d381c3c"
+      },
+      "lcsc": "C17634",
+      "mpn": "0805W8F330JT5E",
+      "pins": {
+        "1": "CS_3V3_DRV",
+        "2": "TF_CS"
+      },
+      "page": 3,
+      "x": 430,
+      "y": 470,
+      "rotation": 90,
+      "description": "33 ohm source termination"
+    },
+    {
+      "ref": "R15",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "72b9a53b8e064184ad3626512d381c3c"
+      },
+      "lcsc": "C17634",
+      "mpn": "0805W8F330JT5E",
+      "pins": {
+        "1": "MOSI_3V3_DRV",
+        "2": "TF_MOSI"
+      },
+      "page": 3,
+      "x": 670,
+      "y": 470,
+      "rotation": 90,
+      "description": "33 ohm source termination"
+    },
+    {
+      "ref": "R16",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "72b9a53b8e064184ad3626512d381c3c"
+      },
+      "lcsc": "C17634",
+      "mpn": "0805W8F330JT5E",
+      "pins": {
+        "1": "SCK_3V3_DRV",
+        "2": "TF_SCK"
+      },
+      "page": 3,
+      "x": 930,
+      "y": 470,
+      "rotation": 90,
+      "description": "33 ohm source termination"
+    },
+    {
+      "ref": "C10",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "aa6f916383374785be390c4ddc7bf610"
+      },
+      "lcsc": "C1711",
+      "mpn": "CL21B104KBCNNNC",
+      "pins": {
+        "1": "+3V3_TF",
+        "2": "GND"
+      },
+      "page": 3,
+      "x": 430,
+      "y": 330,
+      "rotation": 90,
+      "description": "U3 100nF local"
+    },
+    {
+      "ref": "R17",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "209453f1b0764552b318805e2b7a5c99"
+      },
+      "lcsc": "C38522",
+      "mpn": "0805W8F1002T5E",
+      "pins": {
+        "1": "+5V_LOGIC",
+        "2": "SD_CS_5V"
+      },
+      "page": 3,
+      "x": 670,
+      "y": 330,
+      "rotation": 90,
+      "description": "10k keeps TF deselected during reset"
+    },
+    {
+      "ref": "R18",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "70d0676a7e554bf2bb2f7d2e56e17c75"
+      },
+      "lcsc": "C149504",
+      "mpn": "0805W8F1003T5E",
+      "pins": {
+        "1": "SD_SCK_5V",
+        "2": "GND"
+      },
+      "page": 3,
+      "x": 930,
+      "y": 330,
+      "rotation": 90,
+      "description": "100k defined clock low at reset"
+    },
+    {
+      "ref": "J8",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "406bd03a9fa44ff986ea36982eadefd1"
+      },
+      "lcsc": "C124387",
+      "mpn": "HDR-M_2.54_2x5",
+      "pins": {
+        "1": "+3V3_TF",
+        "2": "GND",
+        "3": "TF_CS",
+        "4": "GND",
+        "5": "TF_MOSI",
+        "6": "GND",
+        "7": "TF_SCK",
+        "8": "GND",
+        "9": "TF_MISO",
+        "10": "CARD_DETECT"
+      },
+      "page": 3,
+      "x": 170,
+      "y": 140,
+      "rotation": 0,
+      "description": "External TF, 3.3V only; 2x5 pin1 square; CD dry contact to GND"
+    },
+    {
+      "ref": "R19",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "2638639501f14321b481be4df15286f7"
+      },
+      "lcsc": "C17713",
+      "mpn": "0805W8F4702T5E",
+      "pins": {
+        "1": "+3V3_TF",
+        "2": "TF_MISO"
+      },
+      "page": 3,
+      "x": 430,
+      "y": 140,
+      "rotation": 90,
+      "description": "47k MISO pullup"
+    },
+    {
+      "ref": "R20",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "2638639501f14321b481be4df15286f7"
+      },
+      "lcsc": "C17713",
+      "mpn": "0805W8F4702T5E",
+      "pins": {
+        "1": "+3V3_TF",
+        "2": "TF_CS"
+      },
+      "page": 3,
+      "x": 670,
+      "y": 140,
+      "rotation": 90,
+      "description": "47k card CS pullup"
+    },
+    {
+      "ref": "R21",
+      "device": {
+        "libraryUuid": "0819f05c4eef4c71ace90d822a990e87",
+        "uuid": "2638639501f14321b481be4df15286f7"
+      },
+      "lcsc": "C17713",
+      "mpn": "0805W8F4702T5E",
+      "pins": {
+        "1": "+3V3_TF",
+        "2": "TF_MOSI"
+      },
+      "page": 3,
+      "x": 930,
+      "y": 140,
+      "rotation": 90,
+      "description": "47k card CMD pullup"
+    }
+  ]
+}

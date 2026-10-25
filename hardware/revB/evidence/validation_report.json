@@ -1,0 +1,135 @@
+{
+  "schematic": {
+    "components": 49,
+    "pins_checked": 162,
+    "functional_nets": 33
+  },
+  "pcb": {
+    "components": 49,
+    "pins_checked": 162,
+    "functional_nets": 33
+  },
+  "manufacturing": {
+    "files": [
+      "Drill_NPTH_Through.DRL",
+      "Drill_PTH_Through.DRL",
+      "Drill_PTH_Through_Via.DRL",
+      "FlyingProbeTesting.json",
+      "Gerber_BoardOutlineLayer.GKO",
+      "Gerber_BottomLayer.GBL",
+      "Gerber_BottomSilkscreenLayer.GBO",
+      "Gerber_BottomSolderMaskLayer.GBS",
+      "Gerber_DocumentLayer.GDL",
+      "Gerber_DrillDrawingLayer.GDD",
+      "Gerber_TopLayer.GTL",
+      "Gerber_TopPasteMaskLayer.GTP",
+      "Gerber_TopSilkscreenLayer.GTO",
+      "Gerber_TopSolderMaskLayer.GTS",
+      "PCB下单必读.txt"
+    ],
+    "required_files_present": true
+  },
+  "bom": {
+    "grouped_rows": 18,
+    "placed_quantity": 49
+  },
+  "native_eda": {
+    "projectName": "/EasyCanad SuperNano TF RevB",
+    "projectUuid": "3747fac923fd71c5abf04a18502cfde38b57b464fc9e273586d7aab9cceeca41",
+    "pages": [
+      "01_Power_Nano",
+      "02_PWM_Servo",
+      "03_Analog_Controls",
+      "04_TF_Interface"
+    ],
+    "schematicDrc": [
+      {
+        "type": "warn",
+        "rule": "ATTRMATCHCODE",
+        "primitives": [
+          {
+            "primitiveId": "91fa707f642ceafb",
+            "sheet": "46e6668ae847376e",
+            "name": "J1($1I82)"
+          },
+          {
+            "primitiveId": "f8a7e53068db53d5",
+            "sheet": "46e6668ae847376e",
+            "name": "JP1($1I83)"
+          },
+          {
+            "primitiveId": "9858a60d5637f297",
+            "sheet": "46e6668ae847376e",
+            "name": "JN1($1I84)"
+          },
+          {
+            "primitiveId": "e6cd20d2f36c6fa5",
+            "sheet": "46e6668ae847376e",
+            "name": "JN2($1I85)"
+          },
+          {
+            "primitiveId": "cf1cdd64c31d4f6a",
+            "sheet": "46e6668ae847376e",
+            "name": "JN3($1I86)"
+          },
+          {
+            "primitiveId": "bac0c5e913a377c3",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J3($2I100)"
+          },
+          {
+            "primitiveId": "a44a3ebc116e4d73",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J4($2I101)"
+          },
+          {
+            "primitiveId": "c28ee2cf5d9b4671",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J5($2I102)"
+          },
+          {
+            "primitiveId": "d04dfc29977aab61",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J2($2I103)"
+          },
+          {
+            "primitiveId": "cf265d8c8e54b7b8",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J6($3I55)"
+          },
+          {
+            "primitiveId": "f8aa318b97d6b2dd",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J7($3I56)"
+          },
+          {
+            "primitiveId": "b21117738c633b76",
+            "sheet": "4821c6e6a7389c87",
+            "name": "JP2($3I57)"
+          },
+          {
+            "primitiveId": "eaabf2ce7a289471",
+            "sheet": "532cc76659492722",
+            "name": "J8($4I205)"
+          }
+        ]
+      }
+    ],
+    "pcbDrc": [],
+    "components": 49,
+    "tracks": 466,
+    "vias": 34
+  },
+  "known_schematic_warning": "ATTRMATCHCODE: generic 2.54mm connector display properties differ from source library supplier metadata; use BOM_assembly.csv procurement criteria.",
+  "bench_test_status": "Not performed; hardware files only. See README.md.",
+  "sha256": {
+    "exports/EasyCanad_RevB_BOM.csv": "5e5bb9726fc5ec6e0934f491066b442fa7d2b90bf16cce5dfd96b60d85b779db",
+    "exports/EasyCanad_RevB_Gerber.zip": "142b7f095fcef9b4c497de5c60038a017ad93c9a8bb1b9752a1575598585835f",
+    "exports/EasyCanad_schematics.zip": "c0fe2a486e1ec6b6624d6a0c8ee43929617cd729fa27d20ca8667a37f92b9850",
+    "exports/pcb_netlist.json": "6b9be9f9ff3386b6825527ed939f10215921166b60193cd251654ed2117e6a32",
+    "exports/pcb_routed.png": "1ded59590b84b790df15c835b33edf444438e50e840a7f0a0ed1371492fe28f3",
+    "exports/schematic_netlist.json": "ba5fa2938978cdeb9f56c9f143adb08823d986e12487371a95099821f6a90143"
+  },
+  "passed_file_checks": true,
+  "errors": []
+}

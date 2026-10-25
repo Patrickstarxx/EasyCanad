@@ -1,0 +1,98 @@
+{
+  "ok": true,
+  "value": {
+    "projectName": "/EasyCanad SuperNano TF RevB",
+    "projectUuid": "3747fac923fd71c5abf04a18502cfde38b57b464fc9e273586d7aab9cceeca41",
+    "pages": [
+      "01_Power_Nano",
+      "02_PWM_Servo",
+      "03_Analog_Controls",
+      "04_TF_Interface"
+    ],
+    "schematicDrc": [
+      {
+        "type": "warn",
+        "rule": "ATTRMATCHCODE",
+        "primitives": [
+          {
+            "primitiveId": "91fa707f642ceafb",
+            "sheet": "46e6668ae847376e",
+            "name": "J1($1I82)"
+          },
+          {
+            "primitiveId": "f8a7e53068db53d5",
+            "sheet": "46e6668ae847376e",
+            "name": "JP1($1I83)"
+          },
+          {
+            "primitiveId": "9858a60d5637f297",
+            "sheet": "46e6668ae847376e",
+            "name": "JN1($1I84)"
+          },
+          {
+            "primitiveId": "e6cd20d2f36c6fa5",
+            "sheet": "46e6668ae847376e",
+            "name": "JN2($1I85)"
+          },
+          {
+            "primitiveId": "cf1cdd64c31d4f6a",
+            "sheet": "46e6668ae847376e",
+            "name": "JN3($1I86)"
+          },
+          {
+            "primitiveId": "bac0c5e913a377c3",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J3($2I100)"
+          },
+          {
+            "primitiveId": "a44a3ebc116e4d73",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J4($2I101)"
+          },
+          {
+            "primitiveId": "c28ee2cf5d9b4671",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J5($2I102)"
+          },
+          {
+            "primitiveId": "d04dfc29977aab61",
+            "sheet": "372ac7691c5e81a6",
+            "name": "J2($2I103)"
+          },
+          {
+            "primitiveId": "cf265d8c8e54b7b8",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J6($3I55)"
+          },
+          {
+            "primitiveId": "f8aa318b97d6b2dd",
+            "sheet": "4821c6e6a7389c87",
+            "name": "J7($3I56)"
+          },
+          {
+            "primitiveId": "b21117738c633b76",
+            "sheet": "4821c6e6a7389c87",
+            "name": "JP2($3I57)"
+          },
+          {
+            "primitiveId": "eaabf2ce7a289471",
+            "sheet": "532cc76659492722",
+            "name": "J8($4I205)"
+          }
+        ]
+      }
+    ],
+    "pcbDrc": [],
+    "components": 49,
+    "tracks": 466,
+    "vias": 34,
+    "files": [
+      {
+        "name": "pcb_routed.png",
+        "saved": "D:\\3FFUN\\EasyCanad\\hardware\\revB\\exports\\pcb_routed.png"
+      }
+    ]
+  },
+  "logs": [],
+  "durationMs": 10274
+}
