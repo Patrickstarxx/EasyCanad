@@ -9,6 +9,13 @@ const uint8_t PIN_RC_IN      = 2;
 const uint8_t PIN_CAL_BTN    = 4;
 
 // ===================== 参数配置 =====================
+// 迎角补偿比例：建议仅使用 0.0 ~ 1.0；修改后重新编译上传
+const float AOA_COMPENSATION_K = 0.5f;
+// 飞手中杆、风标处于参考迎角时的鸭翼基础机械配平指令
+const float CANARD_TRIM_DEG = 0.0f;
+// 相对于 EEPROM 物理零位的参考迎角；这三个参数不写入 EEPROM
+const float AOA_REFERENCE_DEG = 0.0f;
+
 float aoaMinDeg = -180.0f;
 float aoaMaxDeg =  180.0f;
 float aoaOffsetDeg = 0.0f;
@@ -187,7 +194,10 @@ void loop() {
     float rcAddDeg = rcNorm * rcAuthorityDeg;
 
     // ---- 5) 合成命令，并限制到 [-90, 90] ----
-    float canardCmdDeg = -1.2f*aoaFilt - rcAddDeg;
+    // 沿用原方向：正迎角偏差、正 rcAddDeg 均减小鸭翼指令
+    float aoaErrorDeg = aoaFilt - AOA_REFERENCE_DEG;
+    float canardCmdDeg = CANARD_TRIM_DEG - rcAddDeg
+                       - AOA_COMPENSATION_K * aoaErrorDeg;
     canardCmdDeg = clampf(canardCmdDeg, -90.0f, 90.0f);
 
     // ---- 6) 输出舵机 ----
