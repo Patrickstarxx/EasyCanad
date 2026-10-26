@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650">
+<title>EasyCanad Rev D OLED planning preview, illustrative data</title>
+<rect width="900" height="650" fill="#f3f6fa"/>
+<g font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" fill="#233047">
+<text x="40" y="48" font-size="28">Rev D 规划：OLED 状态显示</text>
+<text x="40" y="81" font-size="18">0.96英寸 / 128×64 / SSD1306 / I²C；示例数值，不代表实测</text>
+</g>
+<rect x="96" y="113" width="708" height="390" rx="18" fill="#173f66"/>
+<g fill="#aebdca"><circle cx="116" cy="133" r="7"/><circle cx="784" cy="133" r="7"/><circle cx="116" cy="483" r="7"/><circle cx="784" cy="483" r="7"/></g>
+<rect x="130" y="148" width="640" height="320" rx="4" fill="#05090b"/>
+<g transform="translate(130,148) scale(5)" font-family="Consolas,monospace" font-size="7.2" fill="#eafcff" xml:space="preserve">
+<text x="1" y="7" textLength="125" lengthAdjust="spacingAndGlyphs">RUN  ACTIVE     </text>
+<text x="1" y="15" textLength="125" lengthAdjust="spacingAndGlyphs">AOA    +12.3deg </text>
+<text x="1" y="23" textLength="125" lengthAdjust="spacingAndGlyphs">CMD    -05.0deg </text>
+<text x="1" y="31" textLength="125" lengthAdjust="spacingAndGlyphs">SERVO   1444us  </text>
+<text x="1" y="39" textLength="125" lengthAdjust="spacingAndGlyphs">THR     62%     </text>
+<text x="1" y="47" textLength="125" lengthAdjust="spacingAndGlyphs">RC OK MD OK     </text>
+<text x="1" y="55" textLength="125" lengthAdjust="spacingAndGlyphs">CAL OK LAW 1    </text>
+<text x="1" y="63" textLength="125" lengthAdjust="spacingAndGlyphs">SYS OK          </text>
+</g>
+<g font-family="Microsoft YaHei,Noto Sans CJK SC,sans-serif" fill="#233047" font-size="19">
+<text x="40" y="547">J8：1 GND / 2 逻辑5V / 3 SCL（A5）/ 4 SDA（A4）</text>
+<text x="40" y="582">显示相对风标角、舵角指令、脉宽、通道有效性、标定和故障状态。</text>
+<text x="40" y="617">只读显示，分批刷新；不新增菜单操作。规划图，尚未实施。</text>
+</g>
+</svg>
