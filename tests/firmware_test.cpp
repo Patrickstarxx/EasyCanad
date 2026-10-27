@@ -11,6 +11,7 @@ static void boot() {
   pins[4] = HIGH;
   setup();
   check(Serial.baud == 115200 && canardServo.pin == 9, "setup pins/baud");
+  check(canardServoReverse.pin == 10, "reverse output on D10");
   check(pinModes[4] == INPUT_PULLUP && interruptHandler == rcISR, "button/ISR setup");
   check(EEPROM.writes == 0, "startup must not erase or migrate EEPROM");
 }
@@ -42,6 +43,8 @@ static float command(float angle, float pilotAdd = 0) {
 static void outputIs(float target) {
   // Check the real loop output, allowing only the specified integer PWM rounding.
   check(canardServo.pulse == expectedPWM(target), "actual sketch PWM mismatch");
+  check(canardServoReverse.pulse == expectedPWM(-target), "reverse output must negate full command");
+  check(canardServoReverse.writes == canardServo.writes, "both outputs updated each control cycle");
 }
 static void resetAngle() { aoaTrackingInit = false; aoaInit = false; }
 
@@ -103,6 +106,27 @@ static void limitsCase() {
               canardServo.pulse <= expectedPWM(bounded), "mechanical command limit");
       }
     }
+  }
+}
+static void reverseCase() {
+  aoaFilterAlpha = 1;
+  for (int pwm : {1000, 1250, 1500, 1750, 2000}) {
+    tick(AOA_REFERENCE_DEG, pwm);
+    outputIs(CANARD_TRIM_DEG - (pwm - 1500) * 90.0f / 500.0f);
+    if (CANARD_TRIM_DEG == 0) {
+      if (pwm == 1250) check(canardServo.pulse == 2000 && canardServoReverse.pulse == 1000, "+45 degree pair");
+      if (pwm == 1500) check(canardServo.pulse == 1500 && canardServoReverse.pulse == 1500, "neutral pair");
+      if (pwm == 1750) check(canardServo.pulse == 1000 && canardServoReverse.pulse == 2000, "-45 degree pair");
+      if (pwm == 1000) check(canardServo.pulse == 2400 && canardServoReverse.pulse == 544, "positive clipped pair");
+      if (pwm == 2000) check(canardServo.pulse == 544 && canardServoReverse.pulse == 2400, "negative clipped pair");
+    }
+  }
+  canardLimitDeg = 81; // Both channels are within the unclipped, symmetric region.
+  for (int pwm = 1000; pwm <= 2000; pwm += 13) {
+    tick(AOA_REFERENCE_DEG, pwm);
+    outputIs(CANARD_TRIM_DEG - (pwm - 1500) * 90.0f / 500.0f);
+    check(std::abs(canardServo.pulse + canardServoReverse.pulse - 3000) <= 1,
+          "PWM pair mirrors around 1500 us within integer rounding");
   }
 }
 static void wrapCase() {
@@ -189,18 +213,20 @@ static void telemetryCase() {
   aoaFilterAlpha = 1;
   for (int i = 0; i < 60; ++i) tick(10, 1600);
   for (const char *label : {"AOAraw=", "Zero=", "AOA=", "RC=", "Add=", "K=", "Ref=",
-                            "Err=", "Trim=", "Pilot=", "Auto=", "Cmd=", "ServoUs=", "PWMfresh=1"})
+                            "Err=", "Trim=", "Pilot=", "Auto=", "Cmd=", "ServoUs=", "ServoReverseUs=", "PWMfresh=1"})
     check(Serial.text.find(label) != std::string::npos, "missing telemetry field");
   const std::string before = Serial.text;
   const int writes = canardServo.writes;
   for (int i = 0; i < 300; ++i) tick(-10, -1, 0);
   check(Serial.text == before && canardServo.writes == writes + 300, "TX backpressure must not stop control");
+  check(canardServoReverse.writes == canardServo.writes, "reverse output continues under TX backpressure");
   outputIs(command(-10));
   for (int i = 0; i < 60; ++i) tick(0, -1);
   check(Serial.text.find("PWMfresh=0") != std::string::npos, "pulse timeout telemetry");
   const int count = canardServo.writes;
   ++fakeTime; Serial.capacity = 63; loop();
   check(canardServo.writes == count, "control period remains 5000 us");
+  check(canardServoReverse.writes == count, "reverse output shares 5000 us control period");
 }
 int main(int argc, char **argv) {
   try {
@@ -209,6 +235,7 @@ int main(int argc, char **argv) {
     if (name == "math") mathCase();
     else if (name == "mapping") mappingCase();
     else if (name == "limits") limitsCase();
+    else if (name == "reverse") reverseCase();
     else if (name == "wrap") wrapCase();
     else if (name == "calibration") calibrationCase();
     else if (name == "rc") rcCase();

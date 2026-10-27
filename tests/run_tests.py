@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-CASES = ("math", "mapping", "limits", "wrap", "calibration", "rc", "rollover", "telemetry")
+CASES = ("math", "mapping", "limits", "reverse", "wrap", "calibration", "rc", "rollover", "telemetry")
 VARIANTS = {
     "K0": {"AOA_COMPENSATION_K": "0.0f"},
     "K05": {},

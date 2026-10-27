@@ -2,13 +2,13 @@
 
 EasyCanad 是基于 Arduino Nano 的独立鸭翼控制实验项目：读取风标迎角和接收机输入，计算全动鸭翼舵机指令。本分支是基于 `main` 的 A 线第一阶段：通过修改源码顶部的 K 参数、重新编译上传，调整线性迎角补偿比例。
 
-> 本次保留原 PCB、四个引脚和单文件固件，不合并 PR #1、PR #2 或 v6。算法测试和 Nano 编译已通过；尚未进行真实 Nano 烧录、台架或飞行测试，详见 [测试记录](TESTING.md)。
+> 保留单文件固件和原四个引脚用途，新增 D10 反向舵机输出；PCB 文件不变，不合并 PR #1、PR #2 或 v6。算法测试和 Nano 编译已通过；尚未进行真实 Nano 烧录、台架或飞行测试，详见 [测试记录](TESTING.md)。
 
 ## 代码与验证状态
 
 | 版本 | 内容 | 使用说明 |
 | --- | --- | --- |
-| 本分支 / A 线原型 | 单文件线性补偿：A0 风标、D2 俯仰 PWM、D4 标定按钮、D9 舵机；串口 115200 baud | 见下方“参数设置与上传” |
+| 本分支 / A 线原型 | 单文件线性补偿：A0 风标、D2 俯仰 PWM、D4 标定按钮、D9 舵机、D10 反向舵机；串口 115200 baud | 见下方“参数设置与上传” |
 | [草稿 PR #1](https://github.com/Patrickstarxx/EasyCanad/pull/1) | 模块化 v6 固件：独立手动/辅助模式、地面配置锁定、故障处理、机型模型、日志回放，以及独立配平和可调迎角补偿 | [固件接线与操作](https://github.com/Patrickstarxx/EasyCanad/blob/codex/fix-firmware-control-safety/FIRMWARE.md) · [台架检查表](https://github.com/Patrickstarxx/EasyCanad/blob/codex/fix-firmware-control-safety/BENCH_TEST_PLAN.md) |
 | [草稿 PR #2](https://github.com/Patrickstarxx/EasyCanad/pull/2) | 与 v6 配套的 Windows / Android 网页上位机：设备状态、调参、机型档案、日志曲线和模拟设备 | [上位机说明](https://github.com/Patrickstarxx/EasyCanad/blob/codex/host-configurator/host/README.md) |
 
@@ -45,8 +45,21 @@ const float AOA_REFERENCE_DEG = 0.0f;
 | D2 | 接收机俯仰 PWM 输入 |
 | D4 | 风标零位标定按钮，按下接 GND |
 | D9 | 鸭翼舵机信号输出 |
+| D10 | 新增反向鸭翼舵机信号输出（`PIN_SERVO_REVERSE`） |
 
-本次不增加 D3、D5、D7 或任何其他接线，不修改 PCB、原理图、BOM。继续使用现有供电和共地方案。
+新增一路舵机的信号线接 Nano **D10**，与 Nano 共地。原接线保留，不增加 D3、D5、D7，不修改 PCB、原理图、BOM 文件；现有 PCB 若未引出 D10，需要从 Nano 的 D10 引出信号线。舵机继续使用适合负载的电源供电。
+
+## D10 反向输出
+
+D9 使用最终限幅后的 `canardCmdDeg`，D10 使用 `-canardCmdDeg`；配平、飞手输入与迎角补偿整体反向，共用同一控制周期和限幅。接收机超时后的输出也按同一规则成对更新。
+
+| D9 最终角度指令 | D9 脉宽 | D10 脉宽 |
+| --- | --- | --- |
+| -45° | 1000 μs | 2000 μs |
+| 0° | 1500 μs | 1500 μs |
+| +45° | 2000 μs | 1000 μs |
+
+两路都沿用原 544～2400 μs 端点。在未饱和范围，两路绕 1500 μs 反向变化（整数取整可能相差1 μs）；由于原端点不对称，±90° 指令对应 544/2400 μs 或 2400/544 μs，端点处脉宽之和不一定为3000 μs。若需全行程保持脉宽对称，`canardLimitDeg` 应不大于81°，并进一步按真实机构缩小。Servo 库依次发送两路脉冲，更新来自同一控制计算，但脉冲边沿不同时发生。
 
 ## 方向、限幅与异常行为
 
@@ -59,9 +72,9 @@ const float AOA_REFERENCE_DEG = 0.0f;
 
 ## 串口调试
 
-115200 baud；保留 `AOAraw`、`Zero`、`AOA`、`RC`、`Add`、`Cmd`、`ServoUs` 字段，并增加 `K`、`Ref`、`Err`、`Trim`、`Pilot`、`Auto`、`PWMfresh`。`Add` 沿用原正号定义，`Pilot=-Add` 是真正叠加到鸭翼的飞手项；`Auto=-K*Err`；`RC` 是限幅/超时处理后用于控制的脉宽。
+115200 baud；保留 `AOAraw`、`Zero`、`AOA`、`RC`、`Add`、`Cmd`、`ServoUs` 字段，并增加 `K`、`Ref`、`Err`、`Trim`、`Pilot`、`Auto`、`ServoReverseUs`、`PWMfresh`。`ServoUs` 对应 D9，`ServoReverseUs` 对应 D10。`Add` 沿用原正号定义，`Pilot=-Add` 是真正叠加到鸭翼的飞手项；`Auto=-K*Err`；`RC` 是限幅/超时处理后用于控制的脉宽。
 
-每约 100 ms 采集一帧快照，从 `AOAraw` 到 `PWMfresh` 按顺序每行一个字段、每个控制周期最多发送一个字段；缓冲区不足时延后输出，控制继续。无拥塞时一帧在约 65 ms 内输出完毕。原来单行逗号格式因此变为多行格式。D4 标定信息仍保留，缓冲不足时省略该提示，保存动作不受影响。EEPROM 写入保留原来的同步方式，可能短暂延长标定时的控制间隔，应在地面静止标定。5 ms 是计算周期，Servo 默认脉冲刷新约 20 ms；二者不等同。
+每约 100 ms 采集一帧快照，从 `AOAraw` 到 `PWMfresh` 按顺序每行一个字段、每个控制周期最多发送一个字段，共15行；缓冲区不足时延后输出，控制继续。无拥塞时一帧在约 70 ms 内输出完毕。原来单行逗号格式因此变为多行格式。D4 标定信息仍保留，缓冲不足时省略该提示，保存动作不受影响。EEPROM 写入保留原来的同步方式，可能短暂延长标定时的控制间隔，应在地面静止标定。5 ms 是计算周期，Servo 默认脉冲刷新约 20 ms；二者不等同。
 
 ## 硬件与资料
 

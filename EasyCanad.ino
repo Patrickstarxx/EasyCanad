@@ -5,6 +5,7 @@
 // ===================== 引脚定义 =====================
 const uint8_t PIN_AOA_SENSOR = A0;
 const uint8_t PIN_SERVO      = 9;
+const uint8_t PIN_SERVO_REVERSE = 10; // 新增一路：相对 D9 的最终角度指令反向
 const uint8_t PIN_RC_IN      = 2;
 const uint8_t PIN_CAL_BTN    = 4;
 
@@ -51,6 +52,7 @@ float aoaFilt = 0.0f;
 bool aoaInit = false;
 
 Servo canardServo;
+Servo canardServoReverse;
 
 // ===================== 工具函数 =====================
 static inline float clampf(float x, float lo, float hi) {
@@ -155,6 +157,7 @@ void setup() {
   pinMode(PIN_CAL_BTN, INPUT_PULLUP);
 
   canardServo.attach(PIN_SERVO);
+  canardServoReverse.attach(PIN_SERVO_REVERSE);
   attachInterrupt(digitalPinToInterrupt(PIN_RC_IN), rcISR, CHANGE);
 
   Serial.begin(115200);
@@ -234,16 +237,19 @@ void loop() {
 
     // ---- 6) 输出舵机 ----
     int servoUs = degToServoUs(canardCmdDeg);
+    // 配平、飞手项、补偿合成并限幅后整体取反，两路各自保留原 PWM 端点。
+    int servoReverseUs = degToServoUs(-canardCmdDeg);
     canardServo.writeMicroseconds(servoUs);
+    canardServoReverse.writeMicroseconds(servoReverseUs);
 
     // 每 100 ms 取同一帧快照；每个控制周期最多发一个字段。
     // Nano TX 缓冲区可用 >=63 字节才发送，不等待串口排空。
-    // 每行一个字段（最长标签+float 文本也小于63字节），14行组成一帧。
-    static float debugValues[14];
-    static uint8_t debugField = 14;
+    // 每行一个字段（最长标签+float 文本也小于63字节），15行组成一帧。
+    static float debugValues[15];
+    static uint8_t debugField = 15;
     static uint8_t div = 0;
     if (div < 20) ++div;
-    if (div >= 20 && debugField == 14) {
+    if (div >= 20 && debugField == 15) {
       div = 0;
       debugValues[0] = aoaRawDeg;
       debugValues[1] = sensorZeroDeg;
@@ -258,10 +264,11 @@ void loop() {
       debugValues[10] = -AOA_COMPENSATION_K * aoaErrorDeg;
       debugValues[11] = canardCmdDeg;
       debugValues[12] = servoUs;
-      debugValues[13] = rcPulseFresh ? 1.0f : 0.0f;
+      debugValues[13] = servoReverseUs;
+      debugValues[14] = rcPulseFresh ? 1.0f : 0.0f;
       debugField = 0;
     }
-    if (debugField < 14 && Serial.availableForWrite() >= 63) {
+    if (debugField < 15 && Serial.availableForWrite() >= 63) {
       switch (debugField) {
         case 0: Serial.print(F("AOAraw=")); break;
         case 1: Serial.print(F("Zero=")); break;
@@ -276,7 +283,8 @@ void loop() {
         case 10: Serial.print(F("Auto=")); break;
         case 11: Serial.print(F("Cmd=")); break;
         case 12: Serial.print(F("ServoUs=")); break;
-        case 13: Serial.print(F("PWMfresh=")); break;
+        case 13: Serial.print(F("ServoReverseUs=")); break;
+        case 14: Serial.print(F("PWMfresh=")); break;
       }
       uint8_t digits = (debugField == 3 || debugField >= 12) ? 0 : 2;
       Serial.println(debugValues[debugField], digits);
